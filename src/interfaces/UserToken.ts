@@ -1,6 +1,7 @@
 export interface UserToken {
-    subject: string,
-    userId: string,
-    role: string,
-    exp?: number
+    iss?: string;
+    sub?: string;
+    role?: string;
+    id?: string;
+    exp?: number;
 }

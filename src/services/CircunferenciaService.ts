@@ -2,11 +2,11 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_URL_API;
 
-export const findAllCircunferencias = async () => {
+export const findAllCircunferenciasByAlunoId = async (alunoId: string) => {
 
     try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${API_URL}/circunferencias`, {
+        const response = await axios.get(`${API_URL}/circunferencias/aluno/${alunoId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
