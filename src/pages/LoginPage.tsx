@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Input } from "../components/Input";
 import { handleLogin } from "../services/AuthService";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 export const LoginPage = () => {
@@ -9,6 +10,7 @@ export const LoginPage = () => {
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
 
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -17,6 +19,7 @@ export const LoginPage = () => {
             const data = await handleLogin({ login, password });
             localStorage.setItem("token", data.token);
             alert("Login Realizado com sucesso!!!");
+            navigate("/home");
         } catch (error) {
             alert(error);
         }
