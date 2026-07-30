@@ -10,33 +10,6 @@ interface CircunferenciaProps {
 
 export const ListaCircunferencias = ({ isAdmin, circunferencias, setCircunferencias }: CircunferenciaProps) => {
 
-    /*
-    const [data, setData] = useState<string>("");
-    const [altura, setAltura] = useState<number | string>("");
-    const [peso, setPeso] = useState<number | string>("");
-    const [ombro, setOmbro] = useState<number | string>("");
-    const [cintura, setCintura] = useState<number | string>("");
-    const [quadril, setQuadril] = useState<number | string>("");
-    const [peitoral, setPeitoral] = useState<number | string>("");
-    const [abdomen, setAbdomen] = useState<number | string>("");
-    const [coxaProximalEsquerda, setCoxaProximalEsquerda] = useState<number | string>("");
-    const [coxaProximalDireita, setCoxaProximalDireita] = useState<number | string>("");
-    const [coxaMedialEsquerda, setCoxaMedialEsquerda] = useState<number | string>("");
-    const [coxaMedialDireita, setCoxaMedialDireita] = useState<number | string>("");
-    const [coxaDistalEsquerda, setCoxaDistalEsquerda] = useState<number | string>("");
-    const [coxaDistalDireita, setCoxaDistalDireita] = useState<number | string>("");
-    const [panturrilhaEsquerda, setPanturrilhaEsquerda] = useState<number | string>("");
-    const [panturrilhaDireita, setPanturrilhaDireita] = useState<number | string>("");
-    const [bracoRelaxadoEsquerdo, setBracoRelaxadoEsquerdo] = useState<number | string>("");
-    const [bracoRelaxadoDireito, setBracoRelaxadoDireito] = useState<number | string>("");
-    const [bracoContraidoEsquerdo, setBracoContraidoEsquerdo] = useState<number | string>("");
-    const [bracoContraidoDireito, setBracoContraidoDireito] = useState<number | string>("");
-    const [antebracoEsquerdo, setAntebracoEsquerdo] = useState<number | string>("");
-    const [antebracoDireito, setAntebracoDireito] = useState<number | string>("");
-    const [alunoId, setAlunoId] = useState<string>("");
-
-    */
-
     useEffect(() => {
         const getCircunferencias = async () => {
             try {
@@ -79,8 +52,8 @@ export const ListaCircunferencias = ({ isAdmin, circunferencias, setCircunferenc
     return (
         <div>
             {isAdmin ? (
-                <div className="px-4 w-full max-w-7xl overflow-x-auto">
-                    <table className="table-auto bg-white w-full rounded-2xl shadow-md">
+                <div className="w-full max-w-6xl overflow-x-auto">
+                    <table className="table-auto bg-white min-w-max w-full rounded-2xl shadow-md">
                         <thead>
                             <tr className="border-b border-gray-200 text-gray-700 p-2">
                                 <th className="p-4 text-center">Medidas</th>
@@ -315,8 +288,8 @@ export const ListaCircunferencias = ({ isAdmin, circunferencias, setCircunferenc
                 </div>
             ) : (
 
-                <div className="px-4 w-full max-w-7xl overflow-x-auto">
-                    <table className="table-auto bg-white w-full rounded-2xl shadow-md">
+                <div className="w-full max-w-6xl overflow-x-auto">
+                    <table className="table-auto bg-white min-w-max w-full rounded-2xl shadow-md">
                         <thead>
                             <tr className="border-b border-gray-200 text-gray-700 p-2">
                                 <th className="p-4 text-center">Medidas</th>

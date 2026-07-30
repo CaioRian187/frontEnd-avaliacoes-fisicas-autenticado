@@ -1,9 +1,7 @@
-export interface Circunferencia {
-    id: string | number;
+export interface CircunferenciasRequest {
     data?: string;
     altura?: number;
     peso?: number;
-    imc?: number;
     ombro?: number;
     cintura?: number;
     quadril?: number;
@@ -23,10 +21,5 @@ export interface Circunferencia {
     bracoContraidoDireito?: number;
     antebraçoEsquerdo?: number;
     antebraçoDireito?: number;
-    aluno?: {
-        id?: string;
-        nome?: string;
-        idade: number;
-        sexo: string;
-    }
+    aluno_id?: string;
 }
