@@ -3,5 +3,7 @@ export interface Usuario {
     nome?: string;
     idade?: number;
     sexo?: string;
-
+    login?: string;
+    password?: string;
+    role?: string;
 }

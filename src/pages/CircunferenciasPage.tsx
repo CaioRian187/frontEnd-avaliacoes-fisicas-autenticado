@@ -6,12 +6,14 @@ import type { Circunferencia } from "../interfaces/Circunferencia";
 import { FormCircunferencias } from "../components/FormCircunferencias";
 import type { Usuario } from "../interfaces/Usuario";
 import { findAllUsuariosProjetions } from "../services/UsuarioService";
+import { BotaoVoltar } from "../components/BotaoVoltar";
 
 export const CircunferenciasPage = () => {
 
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [circunferencias, setCircunferencias] = useState<Circunferencia[]>([]);
-    const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+    // Estado de usuarios mantido apenas para o setter; valor nunca lido (TS6133)
+    const [, setUsuarios] = useState<Usuario[]>([]);
     const [idAndNomeUsuarios, setIdAndNomeUsuarios] = useState<{ id: string; nome: string }[]>([]);
 
 
@@ -67,6 +69,7 @@ export const CircunferenciasPage = () => {
 
     return (
         <div className="mt-3 flex flex-col items-center justify-center min-h-screen">
+            <BotaoVoltar />
             <h1 className="mb-4 text-2xl text-gray-800 font-semibold">Circunferências</h1>
 
             {isAdmin && <FormCircunferencias
@@ -77,6 +80,7 @@ export const CircunferenciasPage = () => {
 
             <ListaCircunferencias
                 isAdmin={isAdmin}
+                idAndNomeUsuarios={idAndNomeUsuarios}
                 circunferencias={circunferencias}
                 setCircunferencias={setCircunferencias} />
         </div>

@@ -105,15 +105,17 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
     }
 
     return (
-        <div>
+        <div className="w-full">
+            {/* Responsividade: min-w-6xl fixo removido e padding escala (p-4 md:p-8) para evitar overflow horizontal em telas pequenas */}
             <form
                 onSubmit={handleSubmitForm}
-                className="w-full min-w-6xl h-auto flex flex-col items-center justify-center gap-6 bg-white shadow-md rounded-2xl p-8 mb-4">
+                className="w-full h-auto flex flex-col items-center justify-center gap-6 bg-white shadow-md rounded-2xl p-4 md:p-8 mb-4">
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">Cadastrar Circunferência</h2>
 
-                <div className="w-full flex flex-row gap-4">
+                {/* Responsividade: colunas empilham (flex-col) em mobile e voltam a row a partir de md */}
+                <div className="w-full flex flex-col md:flex-row gap-4">
 
-                    <div className="w-1/2 border-l border-r shadow-lg border-blue-700 rounded-2xl flex flex-col items-center justify-center">
+                    <div className="w-full md:w-1/2 border-l border-r shadow-lg border-blue-700 rounded-2xl flex flex-col items-center justify-center">
                         <h3 className="text-lg font-semibold text-gray-800">Geral e tronco</h3>
 
                         <div className="w-3/4 flex flex-col items-start gap-1">
@@ -145,8 +147,8 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                         </div>
 
 
-                        <div className="w-3/4 flex flex-row gap-4">
-                            <div className="w-1/2 flex flex-col gap-1 justify-center items-start">
+                        <div className="w-3/4 flex flex-col sm:flex-row gap-4">
+                            <div className="w-full sm:w-1/2 flex flex-col gap-1 justify-center items-start">
                                 <h3 className="text-md font-medium text-gray-700">Peso (kg)</h3>
                                 <Input
                                     classname="w-full border rounded-md px-3 py-2"
@@ -157,7 +159,7 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                 />
                             </div>
 
-                            <div className="w-1/2 flex flex-col gap-1 justify-center items-start">
+                            <div className="w-full sm:w-1/2 flex flex-col gap-1 justify-center items-start">
                                 <h3 className="text-md font-medium text-gray-700">Altura (Cm)</h3>
                                 <Input
                                     classname="w-full border rounded-md px-3 py-2"
@@ -223,11 +225,11 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
 
                     </div>
 
-                    <div className="w-1/2 rounded-2xl border-l border-r border-blue-500 shadow-lg flex flex-col items-center justify-center">
+                    <div className="w-full md:w-1/2 rounded-2xl border-l border-r border-blue-500 shadow-lg flex flex-col items-center justify-center">
                         <h3 className="text-lg font-semibold text-gray-800">Membros Inferiores</h3>
 
-                        <div className="w-3/4 flex flex-row gap-4">
-                            <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                        <div className="w-3/4 flex flex-col sm:flex-row gap-4">
+                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                 <label className="text-md font-medium text-gray-700">Coxa Proximal Direita</label>
                                 <Input
                                     classname="w-full border rounded-md px-3 py-2"
@@ -237,7 +239,7 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                     onChange={(e) => setCoxaProximalDireita(e.target.value)}
                                 />
                             </div>
-                            <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                 <label className="text-md font-medium text-gray-700">Coxa Proximal Esquerda</label>
                                 <Input
                                     classname="w-full border rounded-md px-3 py-2"
@@ -248,8 +250,8 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                 />
                             </div>
                         </div>
-                        <div className="w-3/4 flex flex-row gap-4">
-                            <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                        <div className="w-3/4 flex flex-col sm:flex-row gap-4">
+                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                 <label className="text-md font-medium text-gray-700">Coxa Medial Direita</label>
                                 <Input
                                     classname="w-full border rounded-md px-3 py-2"
@@ -259,7 +261,7 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                     onChange={(e) => setCoxaMedialDireita(e.target.value)}
                                 />
                             </div>
-                            <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                 <label className="text-md font-medium text-gray-700">Coxa Medial Esquerda</label>
                                 <Input
                                     classname="w-full border rounded-md px-3 py-2"
@@ -270,8 +272,8 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                 />
                             </div>
                         </div>
-                        <div className="w-3/4 flex flex-row gap-4">
-                            <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                        <div className="w-3/4 flex flex-col sm:flex-row gap-4">
+                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                 <label className="text-md font-medium text-gray-700">Coxa Distal Direita</label>
                                 <Input
                                     classname="w-full border rounded-md px-3 py-2"
@@ -281,7 +283,7 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                     onChange={(e) => setCoxaDistalDireita(e.target.value)}
                                 />
                             </div>
-                            <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                 <label className="text-md font-medium text-gray-700">Coxa Distal Esquerda</label>
                                 <Input
                                     classname="w-full border rounded-md px-3 py-2"
@@ -292,8 +294,8 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                 />
                             </div>
                         </div>
-                        <div className="w-3/4 flex flex-row gap-4">
-                            <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                        <div className="w-3/4 flex flex-col sm:flex-row gap-4">
+                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                 <label className="text-md font-medium text-gray-700">Panturrilha Direita</label>
                                 <Input
                                     classname="w-full border rounded-md px-3 py-2"
@@ -303,7 +305,7 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                     onChange={(e) => setPanturrilhaDireita(e.target.value)}
                                 />
                             </div>
-                            <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                 <label className="text-md font-medium text-gray-700">Panturrilha Esquerda</label>
                                 <Input
                                     classname="w-full border rounded-md px-3 py-2"
@@ -318,8 +320,8 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                         <div className="w-full mt-11 flex flex-col items-center justify-center">
                             <h3 className="text-lg font-semibold text-gray-800">Membros Superiores</h3>
 
-                            <div className="w-3/4 flex flex-row gap-4">
-                                <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                            <div className="w-3/4 flex flex-col sm:flex-row gap-4">
+                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                     <label className="text-md font-medium text-gray-700">Braço Relaxado Esquerdo</label>
                                     <Input
                                         classname="w-full border rounded-md px-3 py-2"
@@ -329,7 +331,7 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                         onChange={(e) => setBracoRelaxadoEsquerdo(e.target.value)}
                                     />
                                 </div>
-                                <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                     <label className="text-md font-medium text-gray-700">Braço Relaxado Direito</label>
                                     <Input
                                         classname="w-full border rounded-md px-3 py-2"
@@ -340,8 +342,8 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                     />
                                 </div>
                             </div>
-                            <div className="w-3/4 flex flex-row gap-4">
-                                <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                            <div className="w-3/4 flex flex-col sm:flex-row gap-4">
+                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                     <label className="text-md font-medium text-gray-700">Braço Contraido Esquerdo</label>
                                     <Input
                                         classname="w-full border rounded-md px-3 py-2"
@@ -351,7 +353,7 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                         onChange={(e) => setBracoContraidoEsquerdo(e.target.value)}
                                     />
                                 </div>
-                                <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                     <label className="text-md font-medium text-gray-700">Braço Contraido Direito</label>
                                     <Input
                                         classname="w-full border rounded-md px-3 py-2"
@@ -362,8 +364,8 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                     />
                                 </div>
                             </div>
-                            <div className="w-3/4 flex flex-row gap-4  mb-4">
-                                <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                            <div className="w-3/4 flex flex-col sm:flex-row gap-4 mb-4">
+                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                     <label className="text-md font-medium text-gray-700">Antebraço Esquerdo</label>
                                     <Input
                                         classname="w-full border rounded-md px-3 py-2"
@@ -373,7 +375,7 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                                         onChange={(e) => setAntebraçoEsquerdo(e.target.value)}
                                     />
                                 </div>
-                                <div className="w-1/2 flex flex-col items-start gap-1 justify-center">
+                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
                                     <label className="text-md font-medium text-gray-700">Antebraço Direito</label>
                                     <Input
                                         classname="w-full border rounded-md px-3 py-2"

@@ -1,35 +1,33 @@
-import { useEffect } from "react";
+import { useMemo, useState } from "react";
 import { converterData } from "../utils/ConverterData";
 import type { Circunferencia } from "../interfaces/Circunferencia";
+import { ModalDelete } from "./ModalDelete";
+import { deleteCircunferenciasById } from "../services/CircunferenciaService";
 
 interface CircunferenciaProps {
     isAdmin: boolean;
+    idAndNomeUsuarios: { id: string, nome: string }[];
     circunferencias: Circunferencia[];
     setCircunferencias: (circunferencias: Circunferencia[]) => void;
 }
 
-export const ListaCircunferencias = ({ isAdmin, circunferencias, setCircunferencias }: CircunferenciaProps) => {
+export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferencias, setCircunferencias }: CircunferenciaProps) => {
+    const [isOpenModalDelete, setIsOpenModalDelete] = useState(false);
+    const [idParaDeletar, setIdParaDeletar] = useState<number | null>(null);
+    const [aluno_id, setAluno_id] = useState<string>("");
 
-    useEffect(() => {
-        const getCircunferencias = async () => {
-            try {
-                // Ordenando por data crescente para a comparação de diferença fazer sentido
-                const ordenadas = [...circunferencias].sort((a, b) =>
-                    new Date(a.data || 0).getTime() - new Date(b.data || 0).getTime()
-                );
-                setCircunferencias(ordenadas);
-            } catch (error) {
-                console.error("Erro ao buscar circunferências:", error);
-            }
-        };
-        getCircunferencias();
-    }, []);
+    const circunferenciasOrdenadas = useMemo(() => {
+        return [...circunferencias].sort((a, b) =>
+            new Date(a.data || 0).getTime() - new Date(b.data || 0).getTime()
+        );
+
+    }, [circunferencias]);
 
     const renderDiferenca = (index: number, campo: keyof Circunferencia) => {
         if (index === 0) return null;
 
-        const valorAtual = circunferencias[index][campo] as number | undefined;
-        const valorAnterior = circunferencias[index - 1][campo] as number | undefined;
+        const valorAtual = circunferenciasOrdenadas[index][campo] as number | undefined;
+        const valorAnterior = circunferenciasOrdenadas[index - 1][campo] as number | undefined;
 
         if (valorAtual === undefined || valorAnterior === undefined || valorAtual === null || valorAnterior === null) return null;
 
@@ -49,15 +47,61 @@ export const ListaCircunferencias = ({ isAdmin, circunferencias, setCircunferenc
         );
     }
 
+    const handleButtonDelete = (circunferenciaId: number) => {
+        setIsOpenModalDelete(true);
+        setIdParaDeletar(circunferenciaId);
+    };
+
+    const onClickSimModalDelete = async () => {
+        if (idParaDeletar === null) return;
+
+        try {
+            await deleteCircunferenciasById(idParaDeletar);
+            setCircunferencias(circunferencias.filter((item) => Number(item.id) !== idParaDeletar));
+            setIsOpenModalDelete(false);
+            setIdParaDeletar(null);
+        } catch (error) {
+            console.error("Erro ao deletar Circunferência: ", error);
+        }
+    }
+
     return (
         <div>
+            {isOpenModalDelete && (
+                <ModalDelete
+                    setIsOpenModalDelete={setIsOpenModalDelete}
+                    msg="Deseja realmente excluir esse registro de circunferências?"
+                    onClickSim={onClickSimModalDelete}
+                />
+            )}
+
             {isAdmin ? (
+                // Responsividade: min-w-6xl fixo removido; overflow-x-auto + min-w-max mantem o design da tabela com scroll horizontal em telas pequenas
                 <div className="w-full max-w-6xl overflow-x-auto">
                     <table className="table-auto bg-white min-w-max w-full rounded-2xl shadow-md">
                         <thead>
+                            {isAdmin && (
+                                <tr className="text-center hover:bg-gray-50">
+                                    <td className="p-4 text-center font-bold text-gray-800">Aluno</td>
+                                    <td>
+                                        <select
+                                            value={aluno_id}
+                                            onChange={(e) => setAluno_id(e.target.value)}
+                                            className="w-full px-3 py-2 border rounded"
+                                        >
+                                            <option value="">Selecione um aluno</option>
+                                            {idAndNomeUsuarios.map((aluno) => (
+                                                <option key={aluno.id} value={aluno.id}>
+                                                    {aluno.nome}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                </tr>
+                            )}
                             <tr className="border-b border-gray-200 text-gray-700 p-2">
                                 <th className="p-4 text-center">Medidas</th>
-                                {circunferencias.map((circunferencia) => (
+                                {circunferenciasOrdenadas.map((circunferencia) => (
                                     <th
                                         className="p-4 text-center"
                                         key={circunferencia.id}>
@@ -67,24 +111,27 @@ export const ListaCircunferencias = ({ isAdmin, circunferencias, setCircunferenc
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Ações</td>
-                                {circunferencias.map((circunferencia) => (
-                                    <td
-                                        className="p-2"
-                                        key={circunferencia.id}
-                                    >
-                                        <button
-                                            className="bg-blue-500 text-white px-2 py-1 rounded mr-2 hover:bg-blue-600">
-                                            Editar
-                                        </button>
-                                        <button
-                                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
-                                            Excluir
-                                        </button>
-                                    </td>
-                                ))}
-                            </tr>
+                            {isAdmin && (
+                                <tr className="text-center hover:bg-gray-50">
+                                    <td className="p-2 text-gray-800">Ações</td>
+                                    {circunferencias.map((circunferencia) => (
+                                        <td
+                                            className="p-2"
+                                            key={circunferencia.id}
+                                        >
+                                            <button
+                                                className="bg-blue-500 text-white px-2 py-1 rounded mr-2 hover:bg-blue-600">
+                                                Editar
+                                            </button>
+                                            <button
+                                                onClick={() => handleButtonDelete(Number(circunferencia.id))}
+                                                className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                                                Excluir
+                                            </button>
+                                        </td>
+                                    ))}
+                                </tr>
+                            )}
                             <tr className="text-center hover:bg-gray-50">
                                 <td className="p-2 text-gray-800">Altura</td>
                                 {circunferencias.map((circunferencia, index) => (
@@ -287,10 +334,10 @@ export const ListaCircunferencias = ({ isAdmin, circunferencias, setCircunferenc
                     </table>
                 </div>
             ) : (
-
-                <div className="w-full max-w-6xl overflow-x-auto">
-                    <table className="table-auto bg-white min-w-max w-full rounded-2xl shadow-md">
-                        <thead>
+                // Responsividade: container com overflow-x-auto preserva o design e permite scroll horizontal da tabela
+                <div className="px-4 w-full max-w-7xl overflow-x-auto">
+                    <table className="table-auto bg-white w-full rounded-2xl shadow-md">
+                        <thead className="lex flex-col items-center justify-center">
                             <tr className="border-b border-gray-200 text-gray-700 p-2">
                                 <th className="p-4 text-center">Medidas</th>
                                 {circunferencias.map((circunferencia) => (

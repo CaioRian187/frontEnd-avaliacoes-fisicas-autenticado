@@ -36,3 +36,18 @@ export const createCircunferencia = async (circunferencias: CircunferenciasReque
     }
 }
 
+export const deleteCircunferenciasById = async (circunrenciaId: number) => {
+
+    try {
+        const token = localStorage.getItem("token")
+        await axios.delete(`${API_URL}/circunferencias/${circunrenciaId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
