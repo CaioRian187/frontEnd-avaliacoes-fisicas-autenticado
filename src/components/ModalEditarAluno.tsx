@@ -1,0 +1,137 @@
+import React, { useEffect, useState } from "react";
+import { Input } from "./Input";
+import { updateUsuario } from "../services/UsuarioService";
+import type { Usuario } from "../interfaces/Usuario";
+import type { UsuarioUpdateRequest } from "../interfaces/UsuarioRequest";
+
+interface ModalEditarAlunoProps {
+    usuario: Usuario;
+    usuarios: Usuario[];
+    setUsuarios: (usuarios: Usuario[]) => void;
+    onClose: () => void;
+}
+
+export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose }: ModalEditarAlunoProps) => {
+
+    const [nome, setNome] = useState(usuario.nome ?? "");
+    const [idade, setIdade] = useState<number | string>(usuario.idade ?? "");
+    const [sexo, setSexo] = useState(usuario.sexo ?? "");
+
+    // Sincroniza os campos caso o aluno selecionado para edicao mude.
+    useEffect(() => {
+        setNome(usuario.nome ?? "");
+        setIdade(usuario.idade ?? "");
+        setSexo(usuario.sexo ?? "");
+    }, [usuario]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!nome || idade === "" || !sexo) {
+            alert("Por favor, preencha todos os campos!");
+            return;
+        }
+
+        if (!usuario.id) return;
+
+        const request: UsuarioUpdateRequest = {
+            nome: nome,
+            idade: Number(idade),
+            sexo: sexo,
+        };
+
+        try {
+            const atualizado = await updateUsuario(usuario.id, request);
+            setUsuarios(usuarios.map((item) => (item.id === atualizado.id ? atualizado : item)));
+            alert("Aluno atualizado com sucesso!!!");
+            onClose();
+        } catch (error) {
+            console.error("Erro ao atualizar aluno: ", error);
+            alert("Falha ao atualizar o aluno. Verifique os dados inseridos.");
+        }
+    }
+
+    return (
+        // Overlay no mesmo padrao visual do ModalDelete
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+                <form
+                    onSubmit={handleSubmit}
+                    className="w-full h-auto flex flex-col items-center justify-center gap-6 bg-white shadow-md rounded-2xl p-4 md:p-8"
+                >
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">Editar Aluno</h2>
+
+                    <div className="w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
+
+                        <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-lg font-medium text-slate-700">Nome</label>
+                                <Input
+                                    classname="w-full px-4 py-2.5 rounded-lg border-2 border-blue-200"
+                                    type="text"
+                                    placeholder="Informe o nome do aluno"
+                                    value={nome}
+                                    onChange={(e) => setNome(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-lg font-medium text-slate-700">Idade</label>
+                                <Input
+                                    classname="w-full px-4 py-2.5 rounded-lg border-2 border-blue-200"
+                                    type="number"
+                                    placeholder="Informe a idade do aluno"
+                                    value={idade}
+                                    onChange={(e) => setIdade(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-lg font-medium text-slate-700">Sexo</label>
+                                <select
+                                    className="w-full px-4 py-2.5 rounded-lg border-2 border-blue-200"
+                                    value={sexo}
+                                    onChange={(e) => setSexo(e.target.value)}
+                                >
+                                    <option value="" disabled hidden>Selecione o sexo</option>
+                                    <option value="MASCULINO">Masculino</option>
+                                    <option value="FEMININO">Feminino</option>
+                                </select>
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-lg font-medium text-slate-700">Login (não editável)</label>
+                                <input
+                                    className="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 bg-gray-100 text-gray-500"
+                                    value={usuario.login ?? ""}
+                                    disabled
+                                    readOnly
+                                />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {/* Responsividade: botoes empilham em mobile e voltam a row a partir de sm */}
+                    <div className="w-full max-w-3xl flex flex-col sm:flex-row gap-4">
+                        <button
+                            type="submit"
+                            className="w-full px-3 py-2 rounded-md bg-blue-700 text-white hover:bg-blue-600"
+                        >
+                            Salvar Alterações
+                        </button>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="w-full px-3 py-2 rounded-md bg-gray-500 text-white hover:bg-gray-600"
+                        >
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}

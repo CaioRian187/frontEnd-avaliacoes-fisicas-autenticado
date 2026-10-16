@@ -3,6 +3,7 @@ import { Input } from "../components/Input";
 import { handleCadastro } from "../services/AuthService";
 import type { CadastroRequest } from "../interfaces/CadastroRequest";
 import { Link, useNavigate } from "react-router-dom";
+import { BotaoVoltar } from "../components/BotaoVoltar";
 
 
 export const CasdastroPage = () => {
@@ -43,7 +44,9 @@ export const CasdastroPage = () => {
 
 
     return (
-        <div className="flex items-center justify-center w-full">
+        // Responsividade: padding externo adicionado para o card nao encostar nas bordas em telas pequenas
+        <div className="flex items-center justify-center w-full p-4">
+            <BotaoVoltar to="/" />
             <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8 border border-blue-400">
                 <h1 className="text-3xl font-bold text-slate-800">
                     Cadastro

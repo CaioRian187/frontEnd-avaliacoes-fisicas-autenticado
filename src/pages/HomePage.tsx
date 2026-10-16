@@ -20,7 +20,8 @@ export const HomePage = () => {
         <div className="flex flex-col justify-center items-center m-4">
 
             <div className="text-center mb-12">
-                <h1 className="text-5xl font-extrabold text-slate-800 drop-shadow-sm">
+                {/* Responsividade: titulo escala em telas pequenas mantendo text-5xl em md+ */}
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-800 drop-shadow-sm">
                     Seja bem vindo ao sistema
                 </h1>
                 <p className="text-lg text-slate-700 mt-3 font-medium">
@@ -29,10 +30,11 @@ export const HomePage = () => {
             </div>
 
             {isAdmin ? (
-                <div className="flex flex-row justify-center items-center gap-2">
+                // Responsividade: cards empilham (flex-col) em mobile e voltam a row a partir de md
+                <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-2">
 
                     <Link
-                        to="/"
+                        to="/alunos"
                         className="flex flex-col justify-center items-center bg-white p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 border-2 border-transparent hover:border-blue-500"
                     >
                         <span className="text-2xl font-bold text-gray-800">Alunos</span>
@@ -63,7 +65,8 @@ export const HomePage = () => {
 
                 </div>
             ) : (
-                <div className="flex flex-row justify-center items-center gap-2">
+                // Responsividade: cards empilham (flex-col) em mobile e voltam a row a partir de md
+                <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-2">
                     <Link
                         to="/circunferencias"
                         className="flex flex-col justify-center items-center bg-white p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 border-2 border-transparent hover:border-blue-500"

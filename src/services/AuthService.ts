@@ -19,7 +19,6 @@ export const handleCadastro = async (cadastroRequest: CadastroRequest) => {
 
     try {
         const response = await axios.post(API_URL + "/auth/cadastro", cadastroRequest);
-        console.log(response.data)
         return response.data;
     } catch (error) {
         console.log(error);
