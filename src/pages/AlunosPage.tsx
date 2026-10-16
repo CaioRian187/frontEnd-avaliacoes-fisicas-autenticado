@@ -61,7 +61,7 @@ export const AlunosPage = () => {
     }
 
     return (
-        <div className="mt-3 flex flex-col items-center justify-center min-h-screen w-full">
+        <div className="mt-2 flex flex-col items-center w-full">
             <BotaoVoltar />
             <h1 className="mb-4 text-2xl text-gray-800 font-semibold">Alunos</h1>
 

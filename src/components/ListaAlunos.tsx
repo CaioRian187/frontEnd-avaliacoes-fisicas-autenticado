@@ -1,7 +1,26 @@
 import { useState } from "react";
+import axios from "axios";
 import type { Usuario } from "../interfaces/Usuario";
 import { ModalDelete } from "./ModalDelete";
 import { deleteUsuarioById } from "../services/UsuarioService";
+
+// Extrai a mensagem devolvida pela API, evitando exibir um alert generico quando
+// o back-end bloqueia a exclusao (ex: aluno com circunferencias/dobras vinculadas).
+const extrairMensagemErro = (error: unknown, fallback: string): string => {
+    if (axios.isAxiosError(error) && error.response?.data) {
+        const data = error.response.data as Record<string, unknown> | string;
+
+        if (typeof data === "string") return data;
+
+        const mensagens = Object.values(data).filter(
+            (valor): valor is string => typeof valor === "string"
+        );
+
+        if (mensagens.length > 0) return mensagens.join(" ");
+    }
+
+    return fallback;
+};
 
 interface ListaAlunosProps {
     isAdmin: boolean;
@@ -32,7 +51,7 @@ export const ListaAlunos = ({ isAdmin, usuarios, setUsuarios, onEdit }: ListaAlu
             alert("Aluno excluído com sucesso!!!");
         } catch (error) {
             console.error("Erro ao deletar aluno: ", error);
-            alert("Falha ao excluir o aluno. Tente novamente.");
+            alert(extrairMensagemErro(error, "Não foi possível excluir o aluno. Tente novamente."));
         }
     }
 
