@@ -31,7 +31,7 @@ export const LoginPage = () => {
 
             <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-blue-400">
                 <h1 className="text-3xl font-bold text-slate-800">
-                    Bem-vindo
+                    Bem-vindo(a)
                 </h1>
                 <p className="text-slate-500 text-sm mt-2">
                     Insira suas credenciais para entrar no sistema

@@ -10,6 +10,54 @@ interface FormCircunferenciasProps {
     setCircunferencias: (circunferencias: Circunferencia[]) => void;
 }
 
+interface CampoMedidaProps {
+    label: string;
+    value: number | string;
+    onChange: (value: string) => void;
+    type?: string;
+    placeholder?: string;
+    className?: string;
+}
+
+// Campo reutilizavel que elimina a repeticao de <label> + <Input> em cada medida.
+const CampoMedida = ({
+    label,
+    value,
+    onChange,
+    type = "number",
+    placeholder = "0",
+    className = "w-3/4 flex flex-col gap-1 items-start",
+}: CampoMedidaProps) => (
+    <div className={className}>
+        <label className="text-md font-medium text-gray-700">{label}</label>
+        <Input
+            classname="w-full border rounded-md px-3 py-2"
+            placeholder={placeholder}
+            type={type}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+        />
+    </div>
+);
+
+interface LinhaCamposProps {
+    campos: [CampoMedidaProps, CampoMedidaProps];
+    className?: string;
+}
+
+// Par de campos lado a lado no desktop e empilhados no mobile (mesmo padrao do formulario original).
+const LinhaCampos = ({ campos, className = "w-3/4 flex flex-col sm:flex-row gap-4" }: LinhaCamposProps) => (
+    <div className={className}>
+        {campos.map((campo) => (
+            <CampoMedida
+                key={campo.label}
+                {...campo}
+                className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center"
+            />
+        ))}
+    </div>
+);
+
 export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCircunferencias }: FormCircunferenciasProps) => {
 
     const [data, setData] = useState<string>("");
@@ -104,15 +152,56 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
         setAluno_id("");
     }
 
+    const camposGerais: CampoMedidaProps[] = [
+        { label: "Ombro", value: ombro, onChange: setOmbro },
+        { label: "Cintura", value: cintura, onChange: setCintura },
+        { label: "Quadril", value: quadril, onChange: setQuadril },
+        { label: "Peitoral", value: peitoral, onChange: setPeitoral },
+        { label: "Abdômen", value: abdomen, onChange: setAbdomen, className: "w-3/4 flex flex-col gap-1 items-start mb-4" },
+    ];
+
+    const linhasMembrosInferiores: [CampoMedidaProps, CampoMedidaProps][] = [
+        [
+            { label: "Coxa Proximal Direita", value: coxaProximalDireita, onChange: setCoxaProximalDireita },
+            { label: "Coxa Proximal Esquerda", value: coxaProximalEsquerda, onChange: setCoxaProximalEsquerda },
+        ],
+        [
+            { label: "Coxa Medial Direita", value: coxaMedialDireita, onChange: setCoxaMedialDireita },
+            { label: "Coxa Medial Esquerda", value: coxaMedialEsquerda, onChange: setCoxaMedialEsquerda },
+        ],
+        [
+            { label: "Coxa Distal Direita", value: coxaDistalDireita, onChange: setCoxaDistalDireita },
+            { label: "Coxa Distal Esquerda", value: coxaDistalEsquerda, onChange: setCoxaDistalEsquerda },
+        ],
+        [
+            { label: "Panturrilha Direita", value: panturrilhaDireita, onChange: setPanturrilhaDireita },
+            { label: "Panturrilha Esquerda", value: panturrilhaEsquerda, onChange: setPanturrilhaEsquerda },
+        ],
+    ];
+
+    const linhasMembrosSuperiores: [CampoMedidaProps, CampoMedidaProps][] = [
+        [
+            { label: "Braço Relaxado Esquerdo", value: bracoRelaxadoEsquerdo, onChange: setBracoRelaxadoEsquerdo },
+            { label: "Braço Relaxado Direito", value: bracoRelaxadoDireito, onChange: setBracoRelaxadoDireito },
+        ],
+        [
+            { label: "Braço Contraido Esquerdo", value: bracoContraidoEsquerdo, onChange: setBracoContraidoEsquerdo },
+            { label: "Braço Contraido Direito", value: bracoContraidoDireito, onChange: setBracoContraidoDireito },
+        ],
+        [
+            { label: "Antebraço Esquerdo", value: antebraçoEsquerdo, onChange: setAntebraçoEsquerdo },
+            { label: "Antebraço Direito", value: antebraçoDireito, onChange: setAntebraçoDireito },
+        ],
+    ];
+
     return (
         <div className="w-full">
-            {/* Responsividade: min-w-6xl fixo removido e padding escala (p-4 md:p-8) para evitar overflow horizontal em telas pequenas */}
+            {/* Colunas empilham (flex-col) no mobile e voltam a row a partir de md, como na tela de alunos */}
             <form
                 onSubmit={handleSubmitForm}
                 className="w-full h-auto flex flex-col items-center justify-center gap-6 bg-white shadow-md rounded-2xl p-4 md:p-8 mb-4">
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">Cadastrar Circunferência</h2>
 
-                {/* Responsividade: colunas empilham (flex-col) em mobile e voltam a row a partir de md */}
                 <div className="w-full flex flex-col md:flex-row gap-4">
 
                     <div className="w-full md:w-1/2 border-l border-r shadow-lg border-blue-700 rounded-2xl flex flex-col items-center justify-center">
@@ -134,264 +223,53 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
                             </select>
                         </div>
 
+                        <CampoMedida
+                            label="Data"
+                            value={data}
+                            onChange={setData}
+                            type="date"
+                            placeholder=""
+                            className="w-3/4 flex flex-col items-start gap-1"
+                        />
 
-                        <div className="w-3/4 flex flex-col items-start gap-1">
-                            <h3 className="text-md font-medium text-gray-700">Data</h3>
-                            <Input
-                                classname="w-full border rounded-md px-3 py-2"
-                                placeholder=""
-                                type="date"
-                                value={data}
-                                onChange={(e) => setData(e.target.value)}
-                            />
-                        </div>
+                        <LinhaCampos
+                            campos={[
+                                { label: "Peso (kg)", value: peso, onChange: setPeso },
+                                { label: "Altura (Cm)", value: altura, onChange: setAltura },
+                            ]}
+                        />
 
-
-                        <div className="w-3/4 flex flex-col sm:flex-row gap-4">
-                            <div className="w-full sm:w-1/2 flex flex-col gap-1 justify-center items-start">
-                                <h3 className="text-md font-medium text-gray-700">Peso (kg)</h3>
-                                <Input
-                                    classname="w-full border rounded-md px-3 py-2"
-                                    placeholder="0"
-                                    type="number"
-                                    value={peso}
-                                    onChange={(e) => setPeso(e.target.value)}
-                                />
-                            </div>
-
-                            <div className="w-full sm:w-1/2 flex flex-col gap-1 justify-center items-start">
-                                <h3 className="text-md font-medium text-gray-700">Altura (Cm)</h3>
-                                <Input
-                                    classname="w-full border rounded-md px-3 py-2"
-                                    placeholder="0"
-                                    type="number"
-                                    value={altura}
-                                    onChange={(e) => setAltura(e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="w-3/4 flex flex-col gap-1 items-start">
-                            <h3 className="text-md font-medium text-gray-700">Ombro</h3>
-                            <Input
-                                classname="w-full border rounded-md px-3 py-2"
-                                placeholder="0"
-                                type="number"
-                                value={ombro}
-                                onChange={(e) => setOmbro(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="w-3/4 flex flex-col gap-1 items-start">
-                            <h3 className="text-md font-medium text-gray-700">Cintura</h3>
-                            <Input
-                                classname="w-full border rounded-md px-3 py-2"
-                                placeholder="0"
-                                type="number"
-                                value={cintura}
-                                onChange={(e) => setCintura(e.target.value)}
-                            />
-                        </div>
-                        <div className="w-3/4 flex flex-col gap-1 items-start">
-                            <h3 className="text-md font-medium text-gray-700">Quadril</h3>
-                            <Input
-                                classname="w-full border rounded-md px-3 py-2"
-                                placeholder="0"
-                                type="number"
-                                value={quadril}
-                                onChange={(e) => setQuadril(e.target.value)}
-                            />
-                        </div>
-                        <div className="w-3/4 flex flex-col gap-1 items-start">
-                            <h3 className="text-md font-medium text-gray-700">Peitoral</h3>
-                            <Input
-                                classname="w-full border rounded-md px-3 py-2"
-                                placeholder="0"
-                                type="number"
-                                value={peitoral}
-                                onChange={(e) => setPeitoral(e.target.value)}
-                            />
-                        </div>
-                        <div className="w-3/4 flex flex-col gap-1 items-start mb-4">
-                            <h3 className="text-md font-medium text-gray-700">Abdômen</h3>
-                            <Input
-                                classname="w-full border rounded-md px-3 py-2"
-                                placeholder="0"
-                                type="number"
-                                value={abdomen}
-                                onChange={(e) => setAbdomen(e.target.value)}
-                            />
-                        </div>
-
+                        {camposGerais.map((campo) => (
+                            <CampoMedida key={campo.label} {...campo} />
+                        ))}
                     </div>
 
                     <div className="w-full md:w-1/2 rounded-2xl border-l border-r border-blue-500 shadow-lg flex flex-col items-center justify-center">
                         <h3 className="text-lg font-semibold text-gray-800">Membros Inferiores</h3>
 
-                        <div className="w-3/4 flex flex-col sm:flex-row gap-4">
-                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                <label className="text-md font-medium text-gray-700">Coxa Proximal Direita</label>
-                                <Input
-                                    classname="w-full border rounded-md px-3 py-2"
-                                    placeholder="0"
-                                    type="number"
-                                    value={coxaProximalDireita}
-                                    onChange={(e) => setCoxaProximalDireita(e.target.value)}
-                                />
-                            </div>
-                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                <label className="text-md font-medium text-gray-700">Coxa Proximal Esquerda</label>
-                                <Input
-                                    classname="w-full border rounded-md px-3 py-2"
-                                    placeholder="0"
-                                    type="number"
-                                    value={coxaProximalEsquerda}
-                                    onChange={(e) => setCoxaProximalEsquerda(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                        <div className="w-3/4 flex flex-col sm:flex-row gap-4">
-                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                <label className="text-md font-medium text-gray-700">Coxa Medial Direita</label>
-                                <Input
-                                    classname="w-full border rounded-md px-3 py-2"
-                                    placeholder="0"
-                                    type="number"
-                                    value={coxaMedialDireita}
-                                    onChange={(e) => setCoxaMedialDireita(e.target.value)}
-                                />
-                            </div>
-                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                <label className="text-md font-medium text-gray-700">Coxa Medial Esquerda</label>
-                                <Input
-                                    classname="w-full border rounded-md px-3 py-2"
-                                    placeholder="0"
-                                    type="number"
-                                    value={coxaMedialEsquerda}
-                                    onChange={(e) => setCoxaMedialEsquerda(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                        <div className="w-3/4 flex flex-col sm:flex-row gap-4">
-                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                <label className="text-md font-medium text-gray-700">Coxa Distal Direita</label>
-                                <Input
-                                    classname="w-full border rounded-md px-3 py-2"
-                                    placeholder="0"
-                                    type="number"
-                                    value={coxaDistalDireita}
-                                    onChange={(e) => setCoxaDistalDireita(e.target.value)}
-                                />
-                            </div>
-                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                <label className="text-md font-medium text-gray-700">Coxa Distal Esquerda</label>
-                                <Input
-                                    classname="w-full border rounded-md px-3 py-2"
-                                    placeholder="0"
-                                    type="number"
-                                    value={coxaDistalEsquerda}
-                                    onChange={(e) => setCoxaDistalEsquerda(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                        <div className="w-3/4 flex flex-col sm:flex-row gap-4">
-                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                <label className="text-md font-medium text-gray-700">Panturrilha Direita</label>
-                                <Input
-                                    classname="w-full border rounded-md px-3 py-2"
-                                    placeholder="0"
-                                    type="number"
-                                    value={panturrilhaDireita}
-                                    onChange={(e) => setPanturrilhaDireita(e.target.value)}
-                                />
-                            </div>
-                            <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                <label className="text-md font-medium text-gray-700">Panturrilha Esquerda</label>
-                                <Input
-                                    classname="w-full border rounded-md px-3 py-2"
-                                    placeholder="0"
-                                    type="number"
-                                    value={panturrilhaEsquerda}
-                                    onChange={(e) => setPanturrilhaEsquerda(e.target.value)}
-                                />
-                            </div>
-                        </div>
+                        {linhasMembrosInferiores.map((linha, index) => (
+                            <LinhaCampos key={index} campos={linha} />
+                        ))}
 
                         <div className="w-full mt-11 flex flex-col items-center justify-center">
                             <h3 className="text-lg font-semibold text-gray-800">Membros Superiores</h3>
 
-                            <div className="w-3/4 flex flex-col sm:flex-row gap-4">
-                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                    <label className="text-md font-medium text-gray-700">Braço Relaxado Esquerdo</label>
-                                    <Input
-                                        classname="w-full border rounded-md px-3 py-2"
-                                        placeholder="0"
-                                        type="number"
-                                        value={bracoRelaxadoEsquerdo}
-                                        onChange={(e) => setBracoRelaxadoEsquerdo(e.target.value)}
-                                    />
-                                </div>
-                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                    <label className="text-md font-medium text-gray-700">Braço Relaxado Direito</label>
-                                    <Input
-                                        classname="w-full border rounded-md px-3 py-2"
-                                        placeholder="0"
-                                        type="number"
-                                        value={bracoRelaxadoDireito}
-                                        onChange={(e) => setBracoRelaxadoDireito(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="w-3/4 flex flex-col sm:flex-row gap-4">
-                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                    <label className="text-md font-medium text-gray-700">Braço Contraido Esquerdo</label>
-                                    <Input
-                                        classname="w-full border rounded-md px-3 py-2"
-                                        placeholder="0"
-                                        type="number"
-                                        value={bracoContraidoEsquerdo}
-                                        onChange={(e) => setBracoContraidoEsquerdo(e.target.value)}
-                                    />
-                                </div>
-                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                    <label className="text-md font-medium text-gray-700">Braço Contraido Direito</label>
-                                    <Input
-                                        classname="w-full border rounded-md px-3 py-2"
-                                        placeholder="0"
-                                        type="number"
-                                        value={bracoContraidoDireito}
-                                        onChange={(e) => setBracoContraidoDireito(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="w-3/4 flex flex-col sm:flex-row gap-4 mb-4">
-                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                    <label className="text-md font-medium text-gray-700">Antebraço Esquerdo</label>
-                                    <Input
-                                        classname="w-full border rounded-md px-3 py-2"
-                                        placeholder="0"
-                                        type="number"
-                                        value={antebraçoEsquerdo}
-                                        onChange={(e) => setAntebraçoEsquerdo(e.target.value)}
-                                    />
-                                </div>
-                                <div className="w-full sm:w-1/2 flex flex-col items-start gap-1 justify-center">
-                                    <label className="text-md font-medium text-gray-700">Antebraço Direito</label>
-                                    <Input
-                                        classname="w-full border rounded-md px-3 py-2"
-                                        placeholder="0"
-                                        type="number"
-                                        value={antebraçoDireito}
-                                        onChange={(e) => setAntebraçoDireito(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-
-
+                            {linhasMembrosSuperiores.map((linha, index) => (
+                                <LinhaCampos
+                                    key={index}
+                                    campos={linha}
+                                    className={
+                                        index === linhasMembrosSuperiores.length - 1
+                                            ? "w-3/4 flex flex-col sm:flex-row gap-4 mb-4"
+                                            : "w-3/4 flex flex-col sm:flex-row gap-4"
+                                    }
+                                />
+                            ))}
                         </div>
                     </div>
 
                 </div>
+
                 <button
                     type="submit"
                     className="w-full px-3 py-2 rounded-md bg-blue-700 text-white hover:bg-blue-600">

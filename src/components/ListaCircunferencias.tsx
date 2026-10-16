@@ -4,6 +4,61 @@ import type { Circunferencia } from "../interfaces/Circunferencia";
 import { ModalDelete } from "./ModalDelete";
 import { deleteCircunferenciasById } from "../services/CircunferenciaService";
 
+type MedidaKey =
+    | "altura"
+    | "peso"
+    | "imc"
+    | "ombro"
+    | "cintura"
+    | "quadril"
+    | "peitoral"
+    | "abdomen"
+    | "coxaProximalEsquerda"
+    | "coxaProximalDireita"
+    | "coxaMedialEsquerda"
+    | "coxaMedialDireita"
+    | "coxaDistalEsquerda"
+    | "coxaDistalDireita"
+    | "panturrilhaEsquerda"
+    | "panturrilhaDireita"
+    | "bracoRelaxadoEsquerdo"
+    | "bracoRelaxadoDireito"
+    | "bracoContraidoEsquerdo"
+    | "bracoContraidoDireito"
+    | "antebraçoEsquerdo"
+    | "antebraçoDireito";
+
+interface MedidaConfig {
+    label: string;
+    key: MedidaKey;
+}
+
+// Configuracao unica das medidas: evita repetir a mesma linha 22x na tabela e nos cards.
+const MEDIDAS: MedidaConfig[] = [
+    { label: "Altura", key: "altura" },
+    { label: "Peso", key: "peso" },
+    { label: "IMC", key: "imc" },
+    { label: "Ombro", key: "ombro" },
+    { label: "Cintura", key: "cintura" },
+    { label: "Quadril", key: "quadril" },
+    { label: "Peitoral", key: "peitoral" },
+    { label: "Abdomen", key: "abdomen" },
+    { label: "Coxa Proximal Esquerda", key: "coxaProximalEsquerda" },
+    { label: "Coxa Proximal Direita", key: "coxaProximalDireita" },
+    { label: "Coxa Medial Esquerda", key: "coxaMedialEsquerda" },
+    { label: "Coxa Medial Direita", key: "coxaMedialDireita" },
+    { label: "Coxa Distal Esquerda", key: "coxaDistalEsquerda" },
+    { label: "Coxa Distal Direita", key: "coxaDistalDireita" },
+    { label: "Panturrilha Esquerda", key: "panturrilhaEsquerda" },
+    { label: "Panturrilha Direita", key: "panturrilhaDireita" },
+    { label: "Braço Relaxado Esquerdo", key: "bracoRelaxadoEsquerdo" },
+    { label: "Braço Relaxado Direito", key: "bracoRelaxadoDireito" },
+    { label: "Braço Contraído Esquerdo", key: "bracoContraidoEsquerdo" },
+    { label: "Braço Contraído Direito", key: "bracoContraidoDireito" },
+    { label: "Antebraço Esquerdo", key: "antebraçoEsquerdo" },
+    { label: "Antebraço Direito", key: "antebraçoDireito" },
+];
+
 interface CircunferenciaProps {
     isAdmin: boolean;
     idAndNomeUsuarios: { id: string, nome: string }[];
@@ -65,8 +120,22 @@ export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferenci
         }
     }
 
+    const renderBotoesAcao = (circunferenciaId: number | string) => (
+        <div className="flex flex-row gap-2">
+            <button
+                className="bg-blue-500 text-white px-2 py-1 rounded mr-2 hover:bg-blue-600">
+                Editar
+            </button>
+            <button
+                onClick={() => handleButtonDelete(Number(circunferenciaId))}
+                className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                Excluir
+            </button>
+        </div>
+    );
+
     return (
-        <div>
+        <div className="w-full flex flex-col items-center">
             {isOpenModalDelete && (
                 <ModalDelete
                     setIsOpenModalDelete={setIsOpenModalDelete}
@@ -75,483 +144,100 @@ export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferenci
                 />
             )}
 
-            {isAdmin ? (
-                // Responsividade: min-w-6xl fixo removido; overflow-x-auto + min-w-max mantem o design da tabela com scroll horizontal em telas pequenas
-                <div className="w-full max-w-6xl overflow-x-auto">
-                    <table className="table-auto bg-white min-w-max w-full rounded-2xl shadow-md">
-                        <thead>
-                            {isAdmin && (
-                                <tr className="text-center hover:bg-gray-50">
-                                    <td className="p-4 text-center font-bold text-gray-800">Aluno</td>
-                                    <td>
-                                        <select
-                                            value={aluno_id}
-                                            onChange={(e) => setAluno_id(e.target.value)}
-                                            className="w-full px-3 py-2 border rounded"
-                                        >
-                                            <option value="">Selecione um aluno</option>
-                                            {idAndNomeUsuarios.map((aluno) => (
-                                                <option key={aluno.id} value={aluno.id}>
-                                                    {aluno.nome}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                            )}
-                            <tr className="border-b border-gray-200 text-gray-700 p-2">
-                                <th className="p-4 text-center">Medidas</th>
+            {/* Mobile: um card por data/avaliacao, no mesmo padrao da tela de alunos (visivel apenas abaixo de md) */}
+            <div className="w-full max-w-6xl flex flex-col gap-4 md:hidden">
+                {circunferenciasOrdenadas.map((circunferencia, index) => (
+                    <div
+                        key={circunferencia.id}
+                        className="bg-white rounded-2xl shadow-md p-4 flex flex-col gap-2"
+                    >
+                        <div className="flex justify-between items-center gap-2">
+                            <h3 className="text-lg font-bold text-gray-800">
+                                {converterData(circunferencia.data || "")}
+                            </h3>
+                        </div>
+
+                        {MEDIDAS.map((medida) => (
+                            <div key={medida.key} className="flex justify-between items-center gap-2 text-sm text-gray-600">
+                                <span>{medida.label}</span>
+                                <span className="text-gray-800 font-medium">
+                                    {circunferencia[medida.key]}
+                                    {renderDiferenca(index, medida.key)}
+                                </span>
+                            </div>
+                        ))}
+
+                        {isAdmin && (
+                            <div className="mt-2">
+                                {renderBotoesAcao(circunferencia.id)}
+                            </div>
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            {/* Desktop: tabela no mesmo padrao visual das demais telas (visivel a partir de md) */}
+            <div className="hidden md:block w-full max-w-6xl overflow-x-auto">
+                <table className="table-auto bg-white min-w-max w-full rounded-2xl shadow-md">
+                    <thead>
+                        {isAdmin && (
+                            <tr className="text-center hover:bg-gray-50">
+                                <td className="p-4 text-center font-bold text-gray-800">Aluno</td>
+                                <td>
+                                    <select
+                                        value={aluno_id}
+                                        onChange={(e) => setAluno_id(e.target.value)}
+                                        className="w-full px-3 py-2 border rounded"
+                                    >
+                                        <option value="">Selecione um aluno</option>
+                                        {idAndNomeUsuarios.map((aluno) => (
+                                            <option key={aluno.id} value={aluno.id}>
+                                                {aluno.nome}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </td>
+                            </tr>
+                        )}
+                        <tr className="border-b border-gray-200 text-gray-700 p-2">
+                            <th className="p-4 text-center">Medidas</th>
+                            {circunferenciasOrdenadas.map((circunferencia) => (
+                                <th
+                                    className="p-4 text-center"
+                                    key={circunferencia.id}>
+                                    {converterData(circunferencia.data || "")}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                        {isAdmin && (
+                            <tr className="text-center hover:bg-gray-50">
+                                <td className="p-2 text-gray-800">Ações</td>
                                 {circunferenciasOrdenadas.map((circunferencia) => (
-                                    <th
-                                        className="p-4 text-center"
-                                        key={circunferencia.id}>
-                                        {converterData(circunferencia.data || "")}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {isAdmin && (
-                                <tr className="text-center hover:bg-gray-50">
-                                    <td className="p-2 text-gray-800">Ações</td>
-                                    {circunferencias.map((circunferencia) => (
-                                        <td
-                                            className="p-2"
-                                            key={circunferencia.id}
-                                        >
-                                            <button
-                                                className="bg-blue-500 text-white px-2 py-1 rounded mr-2 hover:bg-blue-600">
-                                                Editar
-                                            </button>
-                                            <button
-                                                onClick={() => handleButtonDelete(Number(circunferencia.id))}
-                                                className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
-                                                Excluir
-                                            </button>
-                                        </td>
-                                    ))}
-                                </tr>
-                            )}
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Altura</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.altura}
-                                        {renderDiferenca(index, "altura")}
+                                    <td
+                                        className="p-2"
+                                        key={circunferencia.id}
+                                    >
+                                        {renderBotoesAcao(circunferencia.id)}
                                     </td>
                                 ))}
                             </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Peso</td>
-                                {circunferencias.map((circunferencia, index) => (
+                        )}
+                        {MEDIDAS.map((medida) => (
+                            <tr key={medida.key} className="text-center hover:bg-gray-50">
+                                <td className="p-2 text-gray-800">{medida.label}</td>
+                                {circunferenciasOrdenadas.map((circunferencia, index) => (
                                     <td key={circunferencia.id}>
-                                        {circunferencia.peso}
-                                        {renderDiferenca(index, "peso")}
+                                        {circunferencia[medida.key]}
+                                        {renderDiferenca(index, medida.key)}
                                     </td>
                                 ))}
                             </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">IMC</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.imc}
-                                        {renderDiferenca(index, "imc")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Ombro</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.ombro}
-                                        {renderDiferenca(index, "ombro")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Cintura</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.cintura}
-                                        {renderDiferenca(index, "cintura")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Quadril</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.quadril}
-                                        {renderDiferenca(index, "quadril")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Peitoral</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.peitoral}
-                                        {renderDiferenca(index, "peitoral")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Abdomen</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.abdomen}
-                                        {renderDiferenca(index, "abdomen")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Proximal Esquerda</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaProximalEsquerda}
-                                        {renderDiferenca(index, "coxaProximalEsquerda")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Proximal Direita</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaProximalDireita}
-                                        {renderDiferenca(index, "coxaProximalDireita")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Medial Esquerda</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaMedialEsquerda}
-                                        {renderDiferenca(index, "coxaMedialEsquerda")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Medial Direita</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaMedialDireita}
-                                        {renderDiferenca(index, "coxaMedialDireita")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Distal Esquerda</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaDistalEsquerda}
-                                        {renderDiferenca(index, "coxaDistalEsquerda")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Distal Direita</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaDistalDireita}
-                                        {renderDiferenca(index, "coxaDistalDireita")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Panturrilha Esquerda</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.panturrilhaEsquerda}
-                                        {renderDiferenca(index, "panturrilhaEsquerda")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Panturrilha Direita</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.panturrilhaDireita}
-                                        {renderDiferenca(index, "panturrilhaDireita")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Braço Relaxado Esquerdo</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.bracoRelaxadoEsquerdo}
-                                        {renderDiferenca(index, "bracoRelaxadoEsquerdo")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Braço Relaxado Direito</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.bracoRelaxadoDireito}
-                                        {renderDiferenca(index, "bracoRelaxadoDireito")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Braço Contraído Esquerdo</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.bracoContraidoEsquerdo}
-                                        {renderDiferenca(index, "bracoContraidoEsquerdo")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Braço Contraído Direito</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.bracoContraidoDireito}
-                                        {renderDiferenca(index, "bracoContraidoDireito")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Antebraço Esquerdo</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.antebraçoEsquerdo}
-                                        {renderDiferenca(index, "antebraçoEsquerdo")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Antebraço Direito</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.antebraçoDireito}
-                                        {renderDiferenca(index, "antebraçoDireito")}
-                                    </td>
-                                ))}
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            ) : (
-                // Responsividade: container com overflow-x-auto preserva o design e permite scroll horizontal da tabela
-                <div className="px-4 w-full max-w-7xl overflow-x-auto">
-                    <table className="table-auto bg-white w-full rounded-2xl shadow-md">
-                        <thead className="lex flex-col items-center justify-center">
-                            <tr className="border-b border-gray-200 text-gray-700 p-2">
-                                <th className="p-4 text-center">Medidas</th>
-                                {circunferencias.map((circunferencia) => (
-                                    <th
-                                        className="p-4 text-center"
-                                        key={circunferencia.id}>
-                                        {converterData(circunferencia.data || "")}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Altura</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.altura}
-                                        {renderDiferenca(index, "altura")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Peso</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.peso}
-                                        {renderDiferenca(index, "peso")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">IMC</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.imc}
-                                        {renderDiferenca(index, "imc")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Ombro</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.ombro}
-                                        {renderDiferenca(index, "ombro")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Cintura</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.cintura}
-                                        {renderDiferenca(index, "cintura")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Quadril</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.quadril}
-                                        {renderDiferenca(index, "quadril")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Peitoral</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.peitoral}
-                                        {renderDiferenca(index, "peitoral")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Abdomen</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.abdomen}
-                                        {renderDiferenca(index, "abdomen")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Proximal Esquerda</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaProximalEsquerda}
-                                        {renderDiferenca(index, "coxaProximalEsquerda")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Proximal Direita</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaProximalDireita}
-                                        {renderDiferenca(index, "coxaProximalDireita")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Medial Esquerda</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaMedialEsquerda}
-                                        {renderDiferenca(index, "coxaMedialEsquerda")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Medial Direita</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaMedialDireita}
-                                        {renderDiferenca(index, "coxaMedialDireita")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Distal Esquerda</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaDistalEsquerda}
-                                        {renderDiferenca(index, "coxaDistalEsquerda")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Coxa Distal Direita</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.coxaDistalDireita}
-                                        {renderDiferenca(index, "coxaDistalDireita")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Panturrilha Esquerda</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.panturrilhaEsquerda}
-                                        {renderDiferenca(index, "panturrilhaEsquerda")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Panturrilha Direita</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.panturrilhaDireita}
-                                        {renderDiferenca(index, "panturrilhaDireita")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Braço Relaxado Esquerdo</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.bracoRelaxadoEsquerdo}
-                                        {renderDiferenca(index, "bracoRelaxadoEsquerdo")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Braço Relaxado Direito</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.bracoRelaxadoDireito}
-                                        {renderDiferenca(index, "bracoRelaxadoDireito")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Braço Contraído Esquerdo</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.bracoContraidoEsquerdo}
-                                        {renderDiferenca(index, "bracoContraidoEsquerdo")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Braço Contraído Direito</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.bracoContraidoDireito}
-                                        {renderDiferenca(index, "bracoContraidoDireito")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Antebraço Esquerdo</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.antebraçoEsquerdo}
-                                        {renderDiferenca(index, "antebraçoEsquerdo")}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="text-center hover:bg-gray-50">
-                                <td className="p-2 text-gray-800">Antebraço Direito</td>
-                                {circunferencias.map((circunferencia, index) => (
-                                    <td key={circunferencia.id}>
-                                        {circunferencia.antebraçoDireito}
-                                        {renderDiferenca(index, "antebraçoDireito")}
-                                    </td>
-                                ))}
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            )}
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }
