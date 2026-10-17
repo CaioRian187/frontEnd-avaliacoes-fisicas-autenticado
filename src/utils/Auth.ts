@@ -5,7 +5,6 @@ export const getTokenDecoded = (): UserToken | null => {
 
     const token = localStorage.getItem("token");
     if (!token) {
-        alert("Token não encontrado. Por favor, faça login novamente.");
         return null;
     }
 
@@ -15,14 +14,15 @@ export const getTokenDecoded = (): UserToken | null => {
 
         if (decoded.exp && decoded.exp * 1000 < Date.now()) {
             localStorage.removeItem("token");
-            alert("Token expirado. Por favor, faça login novamente.");
+            window.dispatchEvent(new Event("session-expired"));
             return null;
         }
         console.log(decoded);
         return decoded;
 
     } catch (error) {
-        alert("Token Inválido.");
+        localStorage.removeItem("token");
+        window.dispatchEvent(new Event("session-expired"));
         console.error("Token Inválido.", error);
         return null;
     }
