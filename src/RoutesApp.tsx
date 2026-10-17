@@ -4,6 +4,7 @@ import { CasdastroPage } from "./pages/CadastroPage";
 import { CircunferenciasPage } from "./pages/CircunferenciasPage";
 import { HomePage } from "./pages/HomePage";
 import { AlunosPage } from "./pages/AlunosPage";
+import { DobrasPage } from "./pages/DobrasPage";
 
 
 export const RoutesApp = () => {
@@ -14,6 +15,7 @@ export const RoutesApp = () => {
             <Route path="/home" element={<HomePage />} />
             <Route path="/alunos" element={<AlunosPage />} />
             <Route path="/circunferencias" element={<CircunferenciasPage />} />
+            <Route path="/dobras" element={<DobrasPage />} />
         </Routes>
     );
 }
