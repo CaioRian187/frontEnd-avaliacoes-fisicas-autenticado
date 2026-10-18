@@ -3,6 +3,7 @@ import { converterData } from "../utils/ConverterData";
 import type { DobraCutanea } from "../interfaces/DobraCutanea";
 import { ModalDelete } from "./ModalDelete";
 import { deleteDobraById } from "../services/DobraService";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 type MedidaKey =
     | "biceps"
@@ -45,6 +46,7 @@ interface DobrasProps {
 }
 
 export const ListaDobras = ({ isAdmin, idAndNomeUsuarios, dobras, setDobras, onEdit, onSelecionarAluno }: DobrasProps) => {
+    const { showSuccess, showError } = useFeedbackModal();
     const [isOpenModalDelete, setIsOpenModalDelete] = useState(false);
     const [idParaDeletar, setIdParaDeletar] = useState<string | number | null>(null);
     const [aluno_id, setAluno_id] = useState<string>("");
@@ -93,10 +95,10 @@ export const ListaDobras = ({ isAdmin, idAndNomeUsuarios, dobras, setDobras, onE
             setDobras(dobras.filter((item) => item.id !== idParaDeletar));
             setIsOpenModalDelete(false);
             setIdParaDeletar(null);
-            alert("Dobra cutânea excluída com sucesso!!!");
+            showSuccess("Dobra cutânea excluída com sucesso!");
         } catch (error) {
             console.error("Erro ao deletar dobra cutânea: ", error);
-            alert("Falha ao excluir a dobra cutânea.");
+            showError("Falha ao excluir a dobra cutânea.");
         }
     }
 

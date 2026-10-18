@@ -3,6 +3,7 @@ import { Input } from "./Input";
 import type { DobraCutanea } from "../interfaces/DobraCutanea";
 import type { DobrasRequest } from "../interfaces/DobrasRequest";
 import { updateDobra } from "../services/DobraService";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 interface ModalEditarDobraProps {
     dobra: DobraCutanea;
@@ -42,6 +43,7 @@ const CampoMedida = ({
 
 export const ModalEditarDobra = ({ dobra, dobras, setDobras, idAndNomeUsuarios, onClose }: ModalEditarDobraProps) => {
 
+    const { showSuccess, showWarning, showError } = useFeedbackModal();
     const [data, setData] = useState(dobra.data ?? "");
     const [biceps, setBiceps] = useState<number | string>(dobra.biceps ?? "");
     const [peitoral, setPeitoral] = useState<number | string>(dobra.peitoral ?? "");
@@ -71,7 +73,7 @@ export const ModalEditarDobra = ({ dobra, dobras, setDobras, idAndNomeUsuarios, 
         e.preventDefault();
 
         if (!data || !aluno_id) {
-            alert("Por favor, preencha a data e selecione um aluno!");
+            showWarning("Por favor, preencha a data e selecione um aluno!");
             return;
         }
 
@@ -81,7 +83,7 @@ export const ModalEditarDobra = ({ dobra, dobras, setDobras, idAndNomeUsuarios, 
         ];
 
         if (medidasObrigatorias.some((medida) => medida === "" || medida === null)) {
-            alert("Por favor, preencha todas as medidas!");
+            showWarning("Por favor, preencha todas as medidas!");
             return;
         }
 
@@ -101,11 +103,11 @@ export const ModalEditarDobra = ({ dobra, dobras, setDobras, idAndNomeUsuarios, 
         try {
             const atualizada = await updateDobra(dobra.id, request);
             setDobras(dobras.map((item) => (item.id === atualizada.id ? atualizada : item)));
-            alert("Dobra cutânea atualizada com sucesso!!!");
             onClose();
+            showSuccess("Dobra cutânea atualizada com sucesso!");
         } catch (error) {
             console.error("Erro ao atualizar dobra cutânea: ", error);
-            alert("Falha ao atualizar a dobra cutânea. Verifique os dados inseridos.");
+            showError("Falha ao atualizar a dobra cutânea. Verifique os dados inseridos.");
         }
     }
 

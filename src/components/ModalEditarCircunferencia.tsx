@@ -3,6 +3,7 @@ import { Input } from "./Input";
 import type { Circunferencia } from "../interfaces/Circunferencia";
 import type { CircunferenciasRequest } from "../interfaces/CircunferenciasRequest";
 import { updateCircunferencia } from "../services/CircunferenciaService";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 interface ModalEditarCircunferenciaProps {
     circunferencia: Circunferencia;
@@ -48,6 +49,7 @@ export const ModalEditarCircunferencia = ({
     onClose,
 }: ModalEditarCircunferenciaProps) => {
 
+    const { showSuccess, showWarning, showError } = useFeedbackModal();
     const [data, setData] = useState<string>(circunferencia.data ?? "");
     const [altura, setAltura] = useState<number | string>(circunferencia.altura ?? "");
     const [peso, setPeso] = useState<number | string>(circunferencia.peso ?? "");
@@ -103,7 +105,7 @@ export const ModalEditarCircunferencia = ({
         e.preventDefault();
 
         if (!data || !aluno_id) {
-            alert("Por favor, preencha a data e selecione um aluno!");
+            showWarning("Por favor, preencha a data e selecione um aluno!");
             return;
         }
 
@@ -138,11 +140,11 @@ export const ModalEditarCircunferencia = ({
             setCircunferencias(
                 circunferencias.map((item) => (item.id === atualizada.id ? atualizada : item))
             );
-            alert("Circunferência atualizada com sucesso!!!");
             onClose();
+            showSuccess("Circunferência atualizada com sucesso!");
         } catch (error) {
             console.error("Erro ao atualizar circunferência: ", error);
-            alert("Falha ao atualizar a circunferência. Verifique os dados inseridos.");
+            showError("Falha ao atualizar a circunferência. Verifique os dados inseridos.");
         }
     }
 

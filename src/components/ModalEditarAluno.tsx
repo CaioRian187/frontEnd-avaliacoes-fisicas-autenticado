@@ -3,6 +3,7 @@ import { Input } from "./Input";
 import { updateUsuario } from "../services/UsuarioService";
 import type { Usuario } from "../interfaces/Usuario";
 import type { UsuarioUpdateRequest } from "../interfaces/UsuarioRequest";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 interface ModalEditarAlunoProps {
     usuario: Usuario;
@@ -13,6 +14,7 @@ interface ModalEditarAlunoProps {
 
 export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose }: ModalEditarAlunoProps) => {
 
+    const { showSuccess, showWarning, showError } = useFeedbackModal();
     const [nome, setNome] = useState(usuario.nome ?? "");
     const [idade, setIdade] = useState<number | string>(usuario.idade ?? "");
     const [sexo, setSexo] = useState(usuario.sexo ?? "");
@@ -28,7 +30,7 @@ export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose }: Mo
         e.preventDefault();
 
         if (!nome || idade === "" || !sexo) {
-            alert("Por favor, preencha todos os campos!");
+            showWarning("Por favor, preencha todos os campos!");
             return;
         }
 
@@ -43,11 +45,11 @@ export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose }: Mo
         try {
             const atualizado = await updateUsuario(usuario.id, request);
             setUsuarios(usuarios.map((item) => (item.id === atualizado.id ? atualizado : item)));
-            alert("Aluno atualizado com sucesso!!!");
             onClose();
+            showSuccess("Aluno atualizado com sucesso!");
         } catch (error) {
             console.error("Erro ao atualizar aluno: ", error);
-            alert("Falha ao atualizar o aluno. Verifique os dados inseridos.");
+            showError("Falha ao atualizar o aluno. Verifique os dados inseridos.");
         }
     }
 

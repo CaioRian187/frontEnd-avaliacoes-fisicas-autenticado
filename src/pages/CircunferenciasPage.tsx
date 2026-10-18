@@ -8,9 +8,11 @@ import { ModalEditarCircunferencia } from "../components/ModalEditarCircunferenc
 import type { Usuario } from "../interfaces/Usuario";
 import { findAllUsuariosProjetions } from "../services/UsuarioService";
 import { BotaoVoltar } from "../components/BotaoVoltar";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 export const CircunferenciasPage = () => {
 
+    const { showError } = useFeedbackModal();
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [circunferencias, setCircunferencias] = useState<Circunferencia[]>([]);
     // Estado de usuarios mantido apenas para o setter; valor nunca lido (TS6133)
@@ -25,7 +27,7 @@ export const CircunferenciasPage = () => {
             setCircunferencias(lista);
         } catch (error) {
             console.error("Erro ao carregar circunferências: ", error);
-            alert("Não foi possível carregar as circunferências.");
+            showError("Não foi possível carregar as circunferências.");
         }
     }
 
@@ -35,14 +37,14 @@ export const CircunferenciasPage = () => {
                 const tokenDecoded = getTokenDecoded();
 
                 if (!tokenDecoded) {
-                    alert("Token não encontrado.");
+                    showError("Token não encontrado.");
                     return;
                 }
 
                 const alunoId = tokenDecoded?.id;
 
                 if (!alunoId) {
-                    alert("Aluno ID não encontrado no token decodificado.");
+                    showError("Aluno ID não encontrado no token decodificado.");
                     return;
                 }
 

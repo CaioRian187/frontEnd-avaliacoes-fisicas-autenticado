@@ -8,9 +8,11 @@ import { FormDobras } from "../components/FormDobras";
 import { ListaDobras } from "../components/ListaDobras";
 import { ModalEditarDobra } from "../components/ModalEditarDobra";
 import { BotaoVoltar } from "../components/BotaoVoltar";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 export const DobrasPage = () => {
 
+    const { showError } = useFeedbackModal();
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [dobras, setDobras] = useState<DobraCutanea[]>([]);
     const [idAndNomeUsuarios, setIdAndNomeUsuarios] = useState<{ id: string; nome: string }[]>([]);
@@ -22,7 +24,7 @@ export const DobrasPage = () => {
             setDobras(lista);
         } catch (error) {
             console.error("Erro ao carregar dobras cutâneas: ", error);
-            alert("Não foi possível carregar as dobras cutâneas.");
+            showError("Não foi possível carregar as dobras cutâneas.");
         }
     }
 
@@ -47,7 +49,7 @@ export const DobrasPage = () => {
                 const alunoId = tokenDecoded.id;
 
                 if (!alunoId) {
-                    alert("Aluno ID não encontrado no token decodificado.");
+                    showError("Aluno ID não encontrado no token decodificado.");
                     return;
                 }
 

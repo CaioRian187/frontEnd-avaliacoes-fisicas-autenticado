@@ -6,9 +6,11 @@ import { ModalEditarAluno } from "../components/ModalEditarAluno";
 import { ListaAlunos } from "../components/ListaAlunos";
 import { Input } from "../components/Input";
 import { BotaoVoltar } from "../components/BotaoVoltar";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 export const AlunosPage = () => {
 
+    const { showError } = useFeedbackModal();
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [usuarioEmEdicao, setUsuarioEmEdicao] = useState<Usuario | null>(null);
@@ -20,7 +22,7 @@ export const AlunosPage = () => {
             setUsuarios(lista);
         } catch (error) {
             console.error("Erro ao carregar alunos: ", error);
-            alert("Não foi possível carregar a lista de alunos.");
+            showError("Não foi possível carregar a lista de alunos.");
         }
     }
 
@@ -51,7 +53,7 @@ export const AlunosPage = () => {
             setUsuarios(lista);
         } catch (error) {
             console.error("Erro ao buscar alunos por nome: ", error);
-            alert("Não foi possível buscar os alunos pelo nome informado.");
+            showError("Não foi possível buscar os alunos pelo nome informado.");
         }
     }
 

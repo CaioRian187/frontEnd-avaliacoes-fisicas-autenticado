@@ -4,6 +4,8 @@ import { handleCadastro } from "../services/AuthService";
 import type { CadastroRequest } from "../interfaces/CadastroRequest";
 import { Link, useNavigate } from "react-router-dom";
 import { BotaoVoltar } from "../components/BotaoVoltar";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { extrairMensagemErro } from "../utils/ErrorUtils";
 
 
 export const CasdastroPage = () => {
@@ -15,12 +17,13 @@ export const CasdastroPage = () => {
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
+    const { showFeedback, showWarning, showError } = useFeedbackModal();
 
     const handleSubmitForm = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!nome || !idade || !sexo || !login || !password) {
-            alert("Por favor, preencha todos os campos!");
+            showWarning("Por favor, preencha todos os campos!");
             return;
         }
 
@@ -34,11 +37,14 @@ export const CasdastroPage = () => {
 
         try {
             await handleCadastro(cadastroRequest);
-            alert("Usuário cadastrado com sucesso!!!");
-            navigate("/");
+            showFeedback({
+                type: "success",
+                message: "Usuário cadastrado com sucesso!",
+                onClose: () => navigate("/"),
+            });
         } catch (error) {
             console.error("Erro ao cadastrar: ", error);
-            alert("Falha ao realizar o cadastro. Verifique todos os dados inseridos.");
+            showError(extrairMensagemErro(error, "Falha ao realizar o cadastro. Verifique todos os dados inseridos."));
         }
     }
 

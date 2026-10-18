@@ -3,6 +3,7 @@ import { Input } from "./Input";
 import type { DobraCutanea } from "../interfaces/DobraCutanea";
 import type { DobrasRequest } from "../interfaces/DobrasRequest";
 import { createDobra } from "../services/DobraService";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 interface FormDobrasProps {
     idAndNomeUsuarios: { id: string; nome: string }[];
@@ -58,6 +59,7 @@ const LinhaCampos = ({ campos, className = "w-full flex flex-col sm:flex-row gap
 
 export const FormDobras = ({ idAndNomeUsuarios, dobras, setDobras }: FormDobrasProps) => {
 
+    const { showSuccess, showWarning, showError } = useFeedbackModal();
     const [data, setData] = useState<string>("");
     const [biceps, setBiceps] = useState<number | string>("");
     const [peitoral, setPeitoral] = useState<number | string>("");
@@ -71,12 +73,12 @@ export const FormDobras = ({ idAndNomeUsuarios, dobras, setDobras }: FormDobrasP
 
     const validarCampos = (): boolean => {
         if (!aluno_id) {
-            alert("Por favor, selecione um aluno.");
+            showWarning("Por favor, selecione um aluno.");
             return false;
         }
 
         if (!data) {
-            alert("Por favor, informe a data.");
+            showWarning("Por favor, informe a data.");
             return false;
         }
 
@@ -86,7 +88,7 @@ export const FormDobras = ({ idAndNomeUsuarios, dobras, setDobras }: FormDobrasP
         ];
 
         if (medidasObrigatorias.some((medida) => medida === "" || medida === null)) {
-            alert("Por favor, preencha todas as medidas!");
+            showWarning("Por favor, preencha todas as medidas!");
             return false;
         }
 
@@ -114,12 +116,12 @@ export const FormDobras = ({ idAndNomeUsuarios, dobras, setDobras }: FormDobrasP
 
             const dobraResponse = await createDobra(dobrasRequest);
             setDobras([...dobras, dobraResponse]);
-            alert("Dobra cutânea cadastrada com sucesso!!!");
             resetarForm();
+            showSuccess("Dobra cutânea cadastrada com sucesso!");
 
         } catch (error) {
             console.error("Erro ao cadastrar a dobra cutânea", error);
-            alert("Falha ao cadastrar a dobra cutânea. Verifique os dados inseridos.");
+            showError("Falha ao cadastrar a dobra cutânea. Verifique os dados inseridos.");
         }
     }
 

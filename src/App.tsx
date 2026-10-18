@@ -1,13 +1,16 @@
 import { BrowserRouter } from "react-router-dom";
 import { LayoutApp } from "./layouts/LayoutApp"
 import { RoutesApp } from "./RoutesApp"
+import { FeedbackProvider } from "./hooks/useFeedbackModal"
 
 function App() {
   return (
     <BrowserRouter>
-      <LayoutApp>
-        <RoutesApp />
-      </LayoutApp>
+      <FeedbackProvider>
+        <LayoutApp>
+          <RoutesApp />
+        </LayoutApp>
+      </FeedbackProvider>
     </BrowserRouter>
   )
 }

@@ -3,6 +3,7 @@ import { Input } from "./Input";
 import type { CircunferenciasRequest } from "../interfaces/CircunferenciasRequest";
 import { createCircunferencia } from "../services/CircunferenciaService";
 import type { Circunferencia } from "../interfaces/Circunferencia";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 interface FormCircunferenciasProps {
     idAndNomeUsuarios: { id: string; nome: string }[];
@@ -60,6 +61,7 @@ const LinhaCampos = ({ campos, className = "w-3/4 flex flex-col sm:flex-row gap-
 
 export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCircunferencias }: FormCircunferenciasProps) => {
 
+    const { showSuccess } = useFeedbackModal();
     const [data, setData] = useState<string>("");
     const [altura, setAltura] = useState<number | string>("");
     const [peso, setPeso] = useState<number | string>("");
@@ -116,8 +118,8 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
 
             const circunferenciaResponse = await createCircunferencia(circunferenciaRequest);
             setCircunferencias([...circunferencias, circunferenciaResponse]);
-            alert("Circunfência cadastrada com sucesso!!!");
             resetarForm();
+            showSuccess("Circunferência cadastrada com sucesso!");
 
         } catch (error) {
             console.error("Erro ao cadastrar a circunferência", error);
