@@ -129,7 +129,7 @@ export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferenci
     }
 
     const renderBotoesAcao = (circunferencia: Circunferencia) => (
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row justify-center gap-2">
             <button
                 onClick={() => onEdit(circunferencia)}
                 className="bg-blue-500 text-white px-2 py-1 rounded mr-2 hover:bg-blue-600">
@@ -154,7 +154,7 @@ export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferenci
             )}
 
             {/* Mobile: um card por data/avaliacao, no mesmo padrao da tela de alunos (visivel apenas abaixo de md) */}
-            <div className="w-full max-w-6xl flex flex-col gap-4 md:hidden">
+            <div className="w-full flex flex-col gap-4 md:hidden">
                 {/* Seletor unico do ADMIN no mobile: logo abaixo do formulario e acima dos cards */}
                 {isAdmin && (
                     <div className="w-full flex flex-col gap-1 bg-white rounded-2xl shadow-md p-4">
@@ -205,7 +205,7 @@ export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferenci
             </div>
 
             {/* Desktop: tabela no mesmo padrao visual das demais telas (visivel a partir de md) */}
-            <div className="hidden md:block w-full max-w-6xl overflow-x-auto">
+            <div className="hidden md:block w-full overflow-x-auto">
                 <table className="table-auto bg-white min-w-max w-full rounded-2xl shadow-md">
                     <thead>
                         {isAdmin && (
