@@ -133,7 +133,7 @@ export const ListaDobras = ({ isAdmin, idAndNomeUsuarios, dobras, setDobras, onE
             )}
 
             {/* Mobile: um card por data/avaliacao, no mesmo padrao das demais telas (visivel apenas abaixo de md) */}
-            <div className="w-full max-w-6xl flex flex-col gap-4 md:hidden">
+            <div className="w-full flex flex-col gap-4 md:hidden">
                 {/* Seletor unico do ADMIN no mobile: logo abaixo do formulario e acima dos cards */}
                 {isAdmin && (
                     <div className="w-full flex flex-col gap-1 bg-white rounded-2xl shadow-md p-4">
@@ -184,7 +184,7 @@ export const ListaDobras = ({ isAdmin, idAndNomeUsuarios, dobras, setDobras, onE
             </div>
 
             {/* Desktop: tabela no mesmo padrao visual das demais telas (visivel a partir de md) */}
-            <div className="hidden md:block w-full max-w-6xl overflow-x-auto">
+            <div className="hidden md:block w-full overflow-x-auto">
                 <table className="table-auto bg-white min-w-max w-full rounded-2xl shadow-md">
                     <thead>
                         {isAdmin && (

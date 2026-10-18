@@ -31,7 +31,7 @@ const CampoMedida = ({
     <div className={className}>
         <label className="text-md font-medium text-gray-700">{label}</label>
         <Input
-            classname="w-full border rounded-md px-3 py-2"
+            classname="w-full border rounded-md px-3 py-2.5 text-base min-h-11"
             placeholder={placeholder}
             type={type}
             value={value}
@@ -158,8 +158,8 @@ export const FormDobras = ({ idAndNomeUsuarios, dobras, setDobras }: FormDobrasP
     ];
 
     return (
-        /* 1. Container externo expansível e centralizado */
-        <div className="w-full max-w-4xl mx-auto px-4">
+        /* 1. Container externo expansível, ocupando a largura total como na tela de circunferências */
+        <div className="w-full">
             <form
                 onSubmit={handleSubmitForm}
                 className="w-full h-auto flex flex-col items-center justify-center gap-6 bg-white shadow-md rounded-2xl p-6 md:p-8 mb-4">
@@ -174,7 +174,7 @@ export const FormDobras = ({ idAndNomeUsuarios, dobras, setDobras }: FormDobrasP
                         <select
                             value={aluno_id}
                             onChange={(e) => setAluno_id(e.target.value)}
-                            className="w-full px-4 py-2 border rounded-md"
+                            className="w-full px-4 py-2.5 border rounded-md text-base min-h-11"
                         >
                             <option value="">Selecione um aluno</option>
                             {idAndNomeUsuarios.map((aluno) => (
