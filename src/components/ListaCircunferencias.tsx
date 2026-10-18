@@ -65,9 +65,10 @@ interface CircunferenciaProps {
     circunferencias: Circunferencia[];
     setCircunferencias: (circunferencias: Circunferencia[]) => void;
     onSelecionarAluno?: (alunoId: string) => void;
+    onEdit: (circunferencia: Circunferencia) => void;
 }
 
-export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferencias, setCircunferencias, onSelecionarAluno }: CircunferenciaProps) => {
+export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferencias, setCircunferencias, onSelecionarAluno, onEdit }: CircunferenciaProps) => {
     const [isOpenModalDelete, setIsOpenModalDelete] = useState(false);
     const [idParaDeletar, setIdParaDeletar] = useState<number | null>(null);
     const [aluno_id, setAluno_id] = useState<string>("");
@@ -127,14 +128,15 @@ export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferenci
         onSelecionarAluno?.(alunoId);
     }
 
-    const renderBotoesAcao = (circunferenciaId: number | string) => (
+    const renderBotoesAcao = (circunferencia: Circunferencia) => (
         <div className="flex flex-row gap-2">
             <button
+                onClick={() => onEdit(circunferencia)}
                 className="bg-blue-500 text-white px-2 py-1 rounded mr-2 hover:bg-blue-600">
                 Editar
             </button>
             <button
-                onClick={() => handleButtonDelete(Number(circunferenciaId))}
+                onClick={() => handleButtonDelete(Number(circunferencia.id))}
                 className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
                 Excluir
             </button>
@@ -195,7 +197,7 @@ export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferenci
 
                         {isAdmin && (
                             <div className="mt-2">
-                                {renderBotoesAcao(circunferencia.id)}
+                                        {renderBotoesAcao(circunferencia)}
                             </div>
                         )}
                     </div>
@@ -245,7 +247,7 @@ export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferenci
                                         className="p-2"
                                         key={circunferencia.id}
                                     >
-                                        {renderBotoesAcao(circunferencia.id)}
+                                {renderBotoesAcao(circunferencia)}
                                     </td>
                                 ))}
                             </tr>

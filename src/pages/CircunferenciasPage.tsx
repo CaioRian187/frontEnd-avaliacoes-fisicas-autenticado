@@ -4,6 +4,7 @@ import { ListaCircunferencias } from "../components/ListaCircunferencias";
 import { findAllCircunferenciasByAlunoId } from "../services/CircunferenciaService";
 import type { Circunferencia } from "../interfaces/Circunferencia";
 import { FormCircunferencias } from "../components/FormCircunferencias";
+import { ModalEditarCircunferencia } from "../components/ModalEditarCircunferencia";
 import type { Usuario } from "../interfaces/Usuario";
 import { findAllUsuariosProjetions } from "../services/UsuarioService";
 import { BotaoVoltar } from "../components/BotaoVoltar";
@@ -15,6 +16,7 @@ export const CircunferenciasPage = () => {
     // Estado de usuarios mantido apenas para o setter; valor nunca lido (TS6133)
     const [, setUsuarios] = useState<Usuario[]>([]);
     const [idAndNomeUsuarios, setIdAndNomeUsuarios] = useState<{ id: string; nome: string }[]>([]);
+    const [circunferenciaEmEdicao, setCircunferenciaEmEdicao] = useState<Circunferencia | null>(null);
 
 
     const carregarCircunferencias = async (alunoId: string) => {
@@ -93,12 +95,23 @@ export const CircunferenciasPage = () => {
                 setCircunferencias={setCircunferencias}
             />}
 
+            {isAdmin && circunferenciaEmEdicao && (
+                <ModalEditarCircunferencia
+                    circunferencia={circunferenciaEmEdicao}
+                    circunferencias={circunferencias}
+                    setCircunferencias={setCircunferencias}
+                    idAndNomeUsuarios={idAndNomeUsuarios}
+                    onClose={() => setCircunferenciaEmEdicao(null)}
+                />
+            )}
+
             <ListaCircunferencias
                 isAdmin={isAdmin}
                 idAndNomeUsuarios={idAndNomeUsuarios}
                 circunferencias={circunferencias}
                 setCircunferencias={setCircunferencias}
-                onSelecionarAluno={handleSelecionarAluno} />
+                onSelecionarAluno={handleSelecionarAluno}
+                onEdit={setCircunferenciaEmEdicao} />
         </div>
     );
 
