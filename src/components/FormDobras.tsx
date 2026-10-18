@@ -19,14 +19,13 @@ interface CampoMedidaProps {
     className?: string;
 }
 
-// Campo reutilizavel que elimina a repeticao de <label> + <Input> em cada medida.
 const CampoMedida = ({
     label,
     value,
     onChange,
     type = "number",
     placeholder = "0",
-    className = "w-3/4 flex flex-col gap-1 items-start",
+    className = "w-full flex flex-col gap-1 items-start",
 }: CampoMedidaProps) => (
     <div className={className}>
         <label className="text-md font-medium text-gray-700">{label}</label>
@@ -45,8 +44,7 @@ interface LinhaCamposProps {
     className?: string;
 }
 
-// Par de campos lado a lado no desktop e empilhados no mobile (mesmo padrao da tela de circunferencias).
-const LinhaCampos = ({ campos, className = "w-3/4 flex flex-col sm:flex-row gap-4" }: LinhaCamposProps) => (
+const LinhaCampos = ({ campos, className = "w-full flex flex-col sm:flex-row gap-4" }: LinhaCamposProps) => (
     <div className={className}>
         {campos.map((campo) => (
             <CampoMedida
@@ -152,59 +150,60 @@ export const FormDobras = ({ idAndNomeUsuarios, dobras, setDobras }: FormDobrasP
             { label: "Abdominal", value: abdominal, onChange: setAbdominal },
         ],
         [
-            { label: "Suprailíaca", value: suprailiaca, onChange: setSuprailiaca, className: "w-3/4 flex flex-col gap-1 items-start mb-4" },
-            { label: "Coxa", value: coxa, onChange: setCoxa, className: "w-3/4 flex flex-col gap-1 items-start mb-4" },
+            { label: "Suprailíaca", value: suprailiaca, onChange: setSuprailiaca },
+            { label: "Coxa", value: coxa, onChange: setCoxa },
         ],
     ];
 
     return (
-        <div className="w-3/4">
+        /* 1. Container externo expansível e centralizado */
+        <div className="w-full max-w-4xl mx-auto px-4">
             <form
                 onSubmit={handleSubmitForm}
-                className="w-full h-auto flex flex-col items-center justify-center gap-6 bg-white shadow-md rounded-2xl p-4 md:p-8 mb-4">
+                className="w-full h-auto flex flex-col items-center justify-center gap-6 bg-white shadow-md rounded-2xl p-6 md:p-8 mb-4">
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">Cadastrar Dobras Cutâneas</h2>
 
-                <div className="w-full flex justify-center">
-                    <div className="w-full max-w-4xl border-l border-r shadow-lg border-blue-700 rounded-2xl flex flex-col items-center justify-center py-6">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">Avaliação</h3>
+                {/* 2. Bloco interno de Avaliação ocupando 85% do cartão branco */}
+                <div className="w-full sm:w-11/12 border border-blue-700 rounded-2xl flex flex-col items-center justify-center py-6 px-4 md:px-8 shadow-sm gap-4">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Avaliação</h3>
 
-                        <div className="w-3/4 flex flex-col items-start gap-1">
-                            <label className="text-md font-medium text-gray-700">Aluno</label>
-                            <select
-                                value={aluno_id}
-                                onChange={(e) => setAluno_id(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-md"
-                            >
-                                <option value="">Selecione um aluno</option>
-                                {idAndNomeUsuarios.map((aluno) => (
-                                    <option key={aluno.id} value={aluno.id}>
-                                        {aluno.nome}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <CampoMedida
-                            label="Data"
-                            value={data}
-                            onChange={setData}
-                            type="date"
-                            placeholder=""
-                            className="w-3/4 flex flex-col items-start gap-1"
-                        />
-
-                        {linhasMedidas.map((linha, index) => (
-                            <LinhaCampos key={index} campos={linha} />
-                        ))}
+                    <div className="w-full flex flex-col items-start gap-1">
+                        <label className="text-md font-medium text-gray-700">Aluno</label>
+                        <select
+                            value={aluno_id}
+                            onChange={(e) => setAluno_id(e.target.value)}
+                            className="w-full px-4 py-2 border rounded-md"
+                        >
+                            <option value="">Selecione um aluno</option>
+                            {idAndNomeUsuarios.map((aluno) => (
+                                <option key={aluno.id} value={aluno.id}>
+                                    {aluno.nome}
+                                </option>
+                            ))}
+                        </select>
                     </div>
+
+                    <CampoMedida
+                        label="Data"
+                        value={data}
+                        onChange={setData}
+                        type="date"
+                        placeholder=""
+                        className="w-full flex flex-col items-start gap-1"
+                    />
+
+                    {linhasMedidas.map((linha, index) => (
+                        <LinhaCampos key={index} campos={linha} />
+                    ))}
                 </div>
 
+                {/* 3. Botão Salvar perfeitamente alinhado com a caixa de Avaliação */}
                 <button
                     type="submit"
-                    className="w-full px-3 py-2 rounded-md bg-blue-700 text-white hover:bg-blue-600">
+                    className="w-full sm:w-11/12 px-3 py-2.5 rounded-md bg-blue-700 text-white font-medium hover:bg-blue-600 transition-colors">
                     Salvar
                 </button>
             </form>
         </div>
     );
-}
+};

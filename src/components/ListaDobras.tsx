@@ -132,6 +132,25 @@ export const ListaDobras = ({ isAdmin, idAndNomeUsuarios, dobras, setDobras, onE
 
             {/* Mobile: um card por data/avaliacao, no mesmo padrao das demais telas (visivel apenas abaixo de md) */}
             <div className="w-full max-w-6xl flex flex-col gap-4 md:hidden">
+                {/* Seletor unico do ADMIN no mobile: logo abaixo do formulario e acima dos cards */}
+                {isAdmin && (
+                    <div className="w-full flex flex-col gap-1 bg-white rounded-2xl shadow-md p-4">
+                        <label className="text-md font-medium text-gray-700">Selecionar aluno</label>
+                        <select
+                            value={aluno_id}
+                            onChange={(e) => handleSelecionarAluno(e.target.value)}
+                            className="w-full px-3 py-2 border rounded-md"
+                        >
+                            <option value="">Selecione um aluno</option>
+                            {idAndNomeUsuarios.map((aluno) => (
+                                <option key={aluno.id} value={aluno.id}>
+                                    {aluno.nome}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+
                 {dobrasOrdenadas.map((dobra, index) => (
                     <div
                         key={dobra.id}
@@ -160,26 +179,6 @@ export const ListaDobras = ({ isAdmin, idAndNomeUsuarios, dobras, setDobras, onE
                         )}
                     </div>
                 ))}
-
-                {/* Seletor unico do ADMIN no mobile: na parte inferior da listagem, com folga
-                    inferior para o menu suspenso se expandir sem ser cortado pela viewport */}
-                {isAdmin && (
-                    <div className="w-full flex flex-col gap-1 bg-white rounded-2xl shadow-md p-4 mb-40">
-                        <label className="text-md font-medium text-gray-700">Selecionar aluno</label>
-                        <select
-                            value={aluno_id}
-                            onChange={(e) => handleSelecionarAluno(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-md"
-                        >
-                            <option value="">Selecione um aluno</option>
-                            {idAndNomeUsuarios.map((aluno) => (
-                                <option key={aluno.id} value={aluno.id}>
-                                    {aluno.nome}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                )}
             </div>
 
             {/* Desktop: tabela no mesmo padrao visual das demais telas (visivel a partir de md) */}

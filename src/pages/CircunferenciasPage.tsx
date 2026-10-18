@@ -17,6 +17,16 @@ export const CircunferenciasPage = () => {
     const [idAndNomeUsuarios, setIdAndNomeUsuarios] = useState<{ id: string; nome: string }[]>([]);
 
 
+    const carregarCircunferencias = async (alunoId: string) => {
+        try {
+            const lista = await findAllCircunferenciasByAlunoId(alunoId);
+            setCircunferencias(lista);
+        } catch (error) {
+            console.error("Erro ao carregar circunferências: ", error);
+            alert("Não foi possível carregar as circunferências.");
+        }
+    }
+
     useEffect(() => {
         const loadCircunferencias = async () => {
             try {
@@ -34,8 +44,7 @@ export const CircunferenciasPage = () => {
                     return;
                 }
 
-                const listCircunferencias = await findAllCircunferenciasByAlunoId(alunoId);
-                setCircunferencias(listCircunferencias);
+                await carregarCircunferencias(alunoId);
 
 
                 const listUsuariosProjetions = await findAllUsuariosProjetions();
@@ -66,9 +75,15 @@ export const CircunferenciasPage = () => {
         return idAndNomeList;
     }
 
+    // Dispara a busca das circunferências sempre que o ADMIN seleciona outro aluno.
+    const handleSelecionarAluno = async (alunoId: string) => {
+        if (!alunoId) return;
+        await carregarCircunferencias(alunoId);
+    }
+
 
     return (
-        <div className="mt-2 flex flex-col items-center w-full">
+        <div className="mt-2 flex flex-col items-center w-full min-h-screen overflow-y-auto pb-60">
             <BotaoVoltar />
             <h1 className="mb-4 text-2xl text-gray-800 font-semibold">Circunferências</h1>
 
@@ -82,7 +97,8 @@ export const CircunferenciasPage = () => {
                 isAdmin={isAdmin}
                 idAndNomeUsuarios={idAndNomeUsuarios}
                 circunferencias={circunferencias}
-                setCircunferencias={setCircunferencias} />
+                setCircunferencias={setCircunferencias}
+                onSelecionarAluno={handleSelecionarAluno} />
         </div>
     );
 
