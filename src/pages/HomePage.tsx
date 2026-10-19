@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { getTokenDecoded } from "../utils/Auth";
 import { Link } from "react-router-dom";
+import { UserProfileDrawer } from "../components/UserProfileDrawer";
 
 export const HomePage = () => {
 
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     useEffect(() => {
         const decodedToken = getTokenDecoded();
@@ -18,6 +20,22 @@ export const HomePage = () => {
     return (
 
         <div className="flex flex-col justify-center items-center m-4">
+
+            {/* Perfil exibido apenas na tela de menu, ocupando o lugar do botao Voltar das demais telas */}
+            <button
+                type="button"
+                onClick={() => setIsDrawerOpen(true)}
+                aria-label="Abrir perfil do usuário"
+                className="fixed top-4 left-4 z-40 flex items-center gap-2 bg-white text-blue-700 font-semibold px-3 py-2 rounded-2xl shadow-md hover:bg-blue-50 transition-colors"
+            >
+                <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="2" />
+                    <path d="M5 19.5a7 7 0 0 1 14 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                Perfil
+            </button>
+
+            <UserProfileDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
 
             <div className="text-center mb-12">
                 {/* Responsividade: titulo escala em telas pequenas mantendo text-5xl em md+ */}

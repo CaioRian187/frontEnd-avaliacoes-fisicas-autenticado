@@ -10,9 +10,10 @@ interface ModalEditarAlunoProps {
     usuarios: Usuario[];
     setUsuarios: (usuarios: Usuario[]) => void;
     onClose: () => void;
+    titulo?: string;
 }
 
-export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose }: ModalEditarAlunoProps) => {
+export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose, titulo = "Editar Aluno" }: ModalEditarAlunoProps) => {
 
     const { showSuccess, showWarning, showError } = useFeedbackModal();
     const [nome, setNome] = useState(usuario.nome ?? "");
@@ -61,7 +62,7 @@ export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose }: Mo
                     onSubmit={handleSubmit}
                     className="w-full h-auto flex flex-col items-center justify-center gap-6 bg-white shadow-md rounded-2xl p-4 md:p-8"
                 >
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">Editar Aluno</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{titulo}</h2>
 
                     <div className="w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
 
