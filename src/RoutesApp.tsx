@@ -5,6 +5,7 @@ import { CircunferenciasPage } from "./pages/CircunferenciasPage";
 import { HomePage } from "./pages/HomePage";
 import { AlunosPage } from "./pages/AlunosPage";
 import { DobrasPage } from "./pages/DobrasPage";
+import { EstatisticasPage } from "./pages/EstatisticasPage";
 
 
 export const RoutesApp = () => {
@@ -16,6 +17,7 @@ export const RoutesApp = () => {
             <Route path="/alunos" element={<AlunosPage />} />
             <Route path="/circunferencias" element={<CircunferenciasPage />} />
             <Route path="/dobras" element={<DobrasPage />} />
+            <Route path="/estatisticas" element={<EstatisticasPage />} />
         </Routes>
     );
 }

@@ -63,6 +63,16 @@ export const HomePage = () => {
                         </p>
                     </Link>
 
+                    <Link
+                        to="/estatisticas"
+                        className="flex flex-col justify-center items-center bg-white p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 border-2 border-transparent hover:border-blue-500"
+                    >
+                        <span className="text-2xl font-bold text-gray-800">Estatísticas</span>
+                        <p className="text-sm text-gray-500 mt-2">
+                            Emita relatórios de avaliação e comparativos
+                        </p>
+                    </Link>
+
                 </div>
             ) : (
                 // Responsividade: cards empilham (flex-col) em mobile e voltam a row a partir de md
@@ -84,6 +94,16 @@ export const HomePage = () => {
                         <span className="text-2xl font-bold text-gray-800">Dobras Cutâneas</span>
                         <p className="text-sm text-gray-500 mt-2">
                             Acesse todas as informações sobre as dobras cutâneas
+                        </p>
+                    </Link>
+
+                    <Link
+                        to="/estatisticas"
+                        className="flex flex-col justify-center items-center bg-white p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 border-2 border-transparent hover:border-blue-500"
+                    >
+                        <span className="text-2xl font-bold text-gray-800">Estatísticas</span>
+                        <p className="text-sm text-gray-500 mt-2">
+                            Emita seus relatórios de avaliação e comparativos
                         </p>
                     </Link>
                 </div>
