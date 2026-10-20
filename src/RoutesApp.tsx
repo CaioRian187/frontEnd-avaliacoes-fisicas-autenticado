@@ -6,6 +6,7 @@ import { HomePage } from "./pages/HomePage";
 import { AlunosPage } from "./pages/AlunosPage";
 import { DobrasPage } from "./pages/DobrasPage";
 import { EstatisticasPage } from "./pages/EstatisticasPage";
+import { TreinosPage } from "./pages/TreinosPage";
 
 
 export const RoutesApp = () => {
@@ -18,6 +19,7 @@ export const RoutesApp = () => {
             <Route path="/circunferencias" element={<CircunferenciasPage />} />
             <Route path="/dobras" element={<DobrasPage />} />
             <Route path="/estatisticas" element={<EstatisticasPage />} />
+            <Route path="/treinos" element={<TreinosPage />} />
         </Routes>
     );
 }
