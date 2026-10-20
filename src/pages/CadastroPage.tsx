@@ -3,6 +3,9 @@ import { Input } from "../components/Input";
 import { handleCadastro } from "../services/AuthService";
 import type { CadastroRequest } from "../interfaces/CadastroRequest";
 import { Link, useNavigate } from "react-router-dom";
+import { BotaoVoltar } from "../components/BotaoVoltar";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { extrairMensagemErro } from "../utils/ErrorUtils";
 
 
 export const CasdastroPage = () => {
@@ -14,12 +17,13 @@ export const CasdastroPage = () => {
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
+    const { showFeedback, showWarning, showError } = useFeedbackModal();
 
     const handleSubmitForm = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!nome || !idade || !sexo || !login || !password) {
-            alert("Por favor, preencha todos os campos!");
+            showWarning("Por favor, preencha todos os campos!");
             return;
         }
 
@@ -33,17 +37,22 @@ export const CasdastroPage = () => {
 
         try {
             await handleCadastro(cadastroRequest);
-            alert("Usuário cadastrado com sucesso!!!");
-            navigate("/");
+            showFeedback({
+                type: "success",
+                message: "Usuário cadastrado com sucesso!",
+                onClose: () => navigate("/"),
+            });
         } catch (error) {
             console.error("Erro ao cadastrar: ", error);
-            alert("Falha ao realizar o cadastro. Verifique todos os dados inseridos.");
+            showError(extrairMensagemErro(error, "Falha ao realizar o cadastro. Verifique todos os dados inseridos."));
         }
     }
 
 
     return (
-        <div className="flex items-center justify-center w-full">
+        // Responsividade: padding externo adicionado para o card nao encostar nas bordas em telas pequenas
+        <div className="flex items-center justify-center w-full p-4">
+            <BotaoVoltar to="/" />
             <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8 border border-blue-400">
                 <h1 className="text-3xl font-bold text-slate-800">
                     Cadastro

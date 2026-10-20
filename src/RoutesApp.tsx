@@ -1,19 +1,25 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
 import { CasdastroPage } from "./pages/CadastroPage";
 import { CircunferenciasPage } from "./pages/CircunferenciasPage";
 import { HomePage } from "./pages/HomePage";
+import { AlunosPage } from "./pages/AlunosPage";
+import { DobrasPage } from "./pages/DobrasPage";
+import { EstatisticasPage } from "./pages/EstatisticasPage";
+import { TreinosPage } from "./pages/TreinosPage";
 
 
 export const RoutesApp = () => {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/cadastro" element={<CasdastroPage />} />
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/circunferencias" element={<CircunferenciasPage />} />
-            </Routes>
-        </BrowserRouter>
+        <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/cadastro" element={<CasdastroPage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/alunos" element={<AlunosPage />} />
+            <Route path="/circunferencias" element={<CircunferenciasPage />} />
+            <Route path="/dobras" element={<DobrasPage />} />
+            <Route path="/estatisticas" element={<EstatisticasPage />} />
+            <Route path="/treinos" element={<TreinosPage />} />
+        </Routes>
     );
 }

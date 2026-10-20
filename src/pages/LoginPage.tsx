@@ -3,6 +3,8 @@ import { Input } from "../components/Input";
 import { handleLogin } from "../services/AuthService";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { extrairMensagemErro } from "../utils/ErrorUtils";
 
 
 export const LoginPage = () => {
@@ -11,6 +13,7 @@ export const LoginPage = () => {
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
+    const { showFeedback, showError } = useFeedbackModal();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -18,10 +21,13 @@ export const LoginPage = () => {
         try {
             const data = await handleLogin({ login, password });
             localStorage.setItem("token", data.token);
-            alert("Login Realizado com sucesso!!!");
-            navigate("/home");
+            showFeedback({
+                type: "success",
+                message: "Login realizado com sucesso!",
+                onClose: () => navigate("/home"),
+            });
         } catch (error) {
-            alert(error);
+            showError(extrairMensagemErro(error, "Não foi possível realizar o login. Verifique suas credenciais."));
         }
 
     }
@@ -31,7 +37,7 @@ export const LoginPage = () => {
 
             <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-blue-400">
                 <h1 className="text-3xl font-bold text-slate-800">
-                    Bem-vindo
+                    Bem-vindo(a)
                 </h1>
                 <p className="text-slate-500 text-sm mt-2">
                     Insira suas credenciais para entrar no sistema

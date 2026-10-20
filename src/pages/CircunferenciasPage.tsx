@@ -1,37 +1,119 @@
 import { useEffect, useState } from "react";
 import { getTokenDecoded } from "../utils/Auth";
 import { ListaCircunferencias } from "../components/ListaCircunferencias";
-
+import { findAllCircunferenciasByAlunoId } from "../services/CircunferenciaService";
+import type { Circunferencia } from "../interfaces/Circunferencia";
+import { FormCircunferencias } from "../components/FormCircunferencias";
+import { ModalEditarCircunferencia } from "../components/ModalEditarCircunferencia";
+import type { Usuario } from "../interfaces/Usuario";
+import { findAllUsuariosProjetions } from "../services/UsuarioService";
+import { BotaoVoltar } from "../components/BotaoVoltar";
+import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 export const CircunferenciasPage = () => {
 
+    const { showError } = useFeedbackModal();
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [circunferencias, setCircunferencias] = useState<Circunferencia[]>([]);
+    // Estado de usuarios mantido apenas para o setter; valor nunca lido (TS6133)
+    const [, setUsuarios] = useState<Usuario[]>([]);
+    const [idAndNomeUsuarios, setIdAndNomeUsuarios] = useState<{ id: string; nome: string }[]>([]);
+    const [circunferenciaEmEdicao, setCircunferenciaEmEdicao] = useState<Circunferencia | null>(null);
+
+
+    const carregarCircunferencias = async (alunoId: string) => {
+        try {
+            const lista = await findAllCircunferenciasByAlunoId(alunoId);
+            setCircunferencias(lista);
+        } catch (error) {
+            console.error("Erro ao carregar circunferências: ", error);
+            showError("Não foi possível carregar as circunferências.");
+        }
+    }
 
     useEffect(() => {
-        try {
-            const tokenDecod = getTokenDecoded();
-            if (tokenDecod?.role === "ADMIN") {
-                setIsAdmin(true)
+        const loadCircunferencias = async () => {
+            try {
+                const tokenDecoded = getTokenDecoded();
+
+                if (!tokenDecoded) {
+                    showError("Token não encontrado.");
+                    return;
+                }
+
+                const alunoId = tokenDecoded?.id;
+
+                if (!alunoId) {
+                    showError("Aluno ID não encontrado no token decodificado.");
+                    return;
+                }
+
+                await carregarCircunferencias(alunoId);
+
+
+                const listUsuariosProjetions = await findAllUsuariosProjetions();
+                setUsuarios(listUsuariosProjetions);
+
+
+                if (tokenDecoded.role === "ADMIN") {
+                    handleListIdAndNomeUsuarios(listUsuariosProjetions);
+                    setIsAdmin(true);
+                } else {
+                    setIsAdmin(false);
+                }
+            } catch (error) {
+                console.error(error);
             }
-            else {
-                setIsAdmin(false);
-            }
-        } catch (error) {
-            console.error(error)
-        }
+        };
+
+        loadCircunferencias();
     }, [])
 
 
+    const handleListIdAndNomeUsuarios = (list: Usuario[]) => {
+        const idAndNomeList = list.map((usuario) => ({
+            id: usuario?.id || "",
+            nome: usuario?.nome || "",
+        }));
+        setIdAndNomeUsuarios(idAndNomeList);
+        return idAndNomeList;
+    }
+
+    // Dispara a busca das circunferências sempre que o ADMIN seleciona outro aluno.
+    const handleSelecionarAluno = async (alunoId: string) => {
+        if (!alunoId) return;
+        await carregarCircunferencias(alunoId);
+    }
+
+
     return (
-        <div className="mt-3 flex flex-col items-center justify-center min-h-screen">
+        <div className="mt-2 flex flex-col items-center w-full min-h-screen overflow-y-auto pb-60">
+            <BotaoVoltar />
             <h1 className="mb-4 text-2xl text-gray-800 font-semibold">Circunferências</h1>
-            {isAdmin ? (
-                <div>Conteúdo de administrador</div>
-            ) : (
-                <div>
-                    <ListaCircunferencias isAdmin={isAdmin} />
-                </div>
+
+            {isAdmin && <FormCircunferencias
+                idAndNomeUsuarios={idAndNomeUsuarios}
+                circunferencias={circunferencias}
+                setCircunferencias={setCircunferencias}
+            />}
+
+            {isAdmin && circunferenciaEmEdicao && (
+                <ModalEditarCircunferencia
+                    circunferencia={circunferenciaEmEdicao}
+                    circunferencias={circunferencias}
+                    setCircunferencias={setCircunferencias}
+                    idAndNomeUsuarios={idAndNomeUsuarios}
+                    onClose={() => setCircunferenciaEmEdicao(null)}
+                />
             )}
+
+            <ListaCircunferencias
+                isAdmin={isAdmin}
+                idAndNomeUsuarios={idAndNomeUsuarios}
+                circunferencias={circunferencias}
+                setCircunferencias={setCircunferencias}
+                onSelecionarAluno={handleSelecionarAluno}
+                onEdit={setCircunferenciaEmEdicao} />
         </div>
     );
 
