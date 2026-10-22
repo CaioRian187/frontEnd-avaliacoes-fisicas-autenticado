@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { HeaderApp } from "../components/HeaderApp";
+import { Footer } from "../components/Footer";
 import { ModalSessaoExpirada } from "../components/ModalSessaoExpirada";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -40,12 +41,13 @@ export const LayoutApp = ({ children }: React.PropsWithChildren) => {
     };
 
     return (
-        // Layout global: conteudo alinhado ao topo (justify-start) para aproximar as telas do icone e evitar folga vertical
-        <div className="min-h-screen bg-blue-300 flex flex-col items-center justify-start p-4 overflow-x-hidden">
-            <div className="w-full flex flex-col items-center">
+        // Layout global: coluna flexivel com sticky footer, conteudo cresce e empurra o rodape para o fim
+        <div className="min-h-screen bg-blue-300 flex flex-col items-center p-4 overflow-x-hidden">
+            <div className="w-full flex-1 flex flex-col items-center">
                 <HeaderApp />
                 {children}
             </div>
+            <Footer />
             <ModalSessaoExpirada isOpen={isSessionExpired} onConfirm={onConfirmRedirect} />
         </div>
     );

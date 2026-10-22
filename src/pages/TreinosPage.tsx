@@ -19,7 +19,7 @@ export const TreinosPage = () => {
         : [{ valor: "TREINOS", label: "Treinos" }];
 
     return (
-        <div className="mt-2 flex min-h-screen w-full flex-col items-center overflow-y-auto pb-60">
+        <div className="mt-2 flex w-full flex-col items-center py-6">
             <BotaoVoltar />
             <h1 className="mb-4 text-2xl font-semibold text-gray-800">Treinamentos</h1>
 
