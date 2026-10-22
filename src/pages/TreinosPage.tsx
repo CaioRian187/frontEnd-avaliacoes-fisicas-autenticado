@@ -24,8 +24,8 @@ export const TreinosPage = () => {
             <h1 className="mb-4 text-2xl font-semibold text-gray-800">Treinamentos</h1>
 
             <div className="flex w-full max-w-6xl flex-col gap-4">
-                <div className="rounded-2xl bg-white p-1.5 shadow-md">
-                    <div className="flex gap-1">
+                <div className="mx-auto w-full rounded-2xl bg-white p-1.5 shadow-md">
+                    <div className={`grid w-full gap-1 ${abas.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
                         {abas.map((aba) => {
                             const ativa = aba.valor === abaAtiva;
 
@@ -34,7 +34,7 @@ export const TreinosPage = () => {
                                     key={aba.valor}
                                     type="button"
                                     onClick={() => setAbaAtiva(aba.valor)}
-                                    className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors sm:flex-none sm:px-8 ${
+                                    className={`w-full rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
                                         ativa
                                             ? "bg-blue-700 text-white"
                                             : "text-gray-600 hover:bg-blue-50 hover:text-blue-700"
