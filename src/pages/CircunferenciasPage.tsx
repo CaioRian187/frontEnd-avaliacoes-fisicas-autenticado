@@ -87,7 +87,7 @@ export const CircunferenciasPage = () => {
 
 
     return (
-        <div className="mt-2 flex flex-col items-center w-full min-h-screen overflow-y-auto pb-60">
+        <div className="mt-2 flex flex-col items-center w-full py-6">
             <BotaoVoltar />
             <h1 className="mb-4 text-2xl text-gray-800 font-semibold">Circunferências</h1>
 
