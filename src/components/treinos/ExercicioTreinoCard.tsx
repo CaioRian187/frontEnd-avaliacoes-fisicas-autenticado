@@ -1,17 +1,20 @@
+import { useState } from "react";
 import { GRUPO_MUSCULAR_LABELS } from "../../interfaces/Exercicio";
 import type { ExercicioTreinoDraft } from "../../interfaces/Treino";
 import { getYouTubeThumbnailUrl } from "../../utils/YouTube";
 
 interface ExercicioTreinoCardProps {
     draft: ExercicioTreinoDraft;
+    numero: number;
     readOnly?: boolean;
     onChange?: (draft: ExercicioTreinoDraft) => void;
     onRemove?: () => void;
     onVerVideo: () => void;
 }
 
-export const ExercicioTreinoCard = ({ draft, readOnly = false, onChange, onRemove, onVerVideo }: ExercicioTreinoCardProps) => {
+export const ExercicioTreinoCard = ({ draft, numero, readOnly = false, onChange, onRemove, onVerVideo }: ExercicioTreinoCardProps) => {
 
+    const [concluido, setConcluido] = useState(false);
     const thumbnail = getYouTubeThumbnailUrl(draft.exercicio.urlVideo);
 
     const atualizarCampo = (
@@ -22,7 +25,15 @@ export const ExercicioTreinoCard = ({ draft, readOnly = false, onChange, onRemov
     };
 
     return (
-        <div className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm md:flex-row">
+        <div
+            className={`relative flex flex-col gap-4 rounded-2xl border p-4 shadow-sm transition-colors md:flex-row ${
+                concluido ? "border-green-300 bg-green-50/60" : "border-gray-200 bg-white"
+            }`}
+        >
+            <span className="pointer-events-none absolute left-3 top-3 z-10 inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-blue-100 px-2 text-xs font-bold text-blue-700 shadow-sm ring-1 ring-white/70">
+                {numero}º
+            </span>
+
             <button
                 type="button"
                 onClick={onVerVideo}
@@ -138,6 +149,19 @@ export const ExercicioTreinoCard = ({ draft, readOnly = false, onChange, onRemov
                         </div>
                     </div>
                 )}
+
+                <button
+                    type="button"
+                    onClick={() => setConcluido((anterior) => !anterior)}
+                    aria-pressed={concluido}
+                    className={`mt-auto flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition-colors sm:w-auto ${
+                        concluido
+                            ? "border-green-300 bg-green-100 text-green-800 hover:bg-green-200"
+                            : "border-gray-300 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+                    }`}
+                >
+                    {concluido ? "Concluído ✓" : "Marcar como Concluído"}
+                </button>
             </div>
         </div>
     );
