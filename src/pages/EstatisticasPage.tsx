@@ -1,18 +1,33 @@
 import axios from "axios";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { BotaoVoltar } from "../components/BotaoVoltar";
 import { PdfViewerModal } from "../components/PdfViewerModal";
 import { useFeedbackModal } from "../hooks/useFeedbackModal";
 import type { TipoRelatorio } from "../interfaces/Relatorio";
+import { findAllCircunferenciasByAlunoId } from "../services/CircunferenciaService";
+import { findAllDobrasByAlunoId } from "../services/DobraService";
 import { findAllUsuariosProjetions, findUsuarioById } from "../services/UsuarioService";
 import { gerarRelatorioPdf } from "../services/RelatorioService";
 import { getTokenDecoded } from "../utils/Auth";
+import { converterData } from "../utils/ConverterData";
 import { extrairMensagemErro } from "../utils/ErrorUtils";
 
 interface AlunoOption {
     id: string;
     nome: string;
 }
+
+// Mantem apenas a parte YYYY-MM-DD, formato esperado pela API de relatorios.
+const normalizarData = (data?: string): string => (data ? data.slice(0, 10) : "");
+
+const ordenarDatas = (datas: Iterable<string>): string[] =>
+    Array.from(new Set(datas)).sort((a, b) => b.localeCompare(a));
+
+// Extrai apenas as datas validas dos registros retornados pela API.
+const extrairDatas = (registros: Array<{ data?: string }>): string[] =>
+    registros
+        .map((registro) => normalizarData(registro.data))
+        .filter((data) => data.length > 0);
 
 // Remove acentos e caracteres invalidos para montar o nome do arquivo baixado.
 const formatarNomeArquivo = (nome: string): string => {
@@ -60,6 +75,9 @@ export const EstatisticasPage = () => {
     const [tipoRelatorio, setTipoRelatorio] = useState<TipoRelatorio>("unica");
     const [dataInicial, setDataInicial] = useState<string>("");
     const [dataFinal, setDataFinal] = useState<string>("");
+    const [datasDobras, setDatasDobras] = useState<string[]>([]);
+    const [datasCircunferencias, setDatasCircunferencias] = useState<string[]>([]);
+    const [carregandoDatas, setCarregandoDatas] = useState<boolean>(false);
     const [carregando, setCarregando] = useState<boolean>(false);
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [nomeArquivo, setNomeArquivo] = useState<string>("");
@@ -84,8 +102,6 @@ export const EstatisticasPage = () => {
             return;
         }
 
-        setAlunoId(tokenDecoded.id);
-
         if (tokenDecoded.role === "ADMIN") {
             setIsAdmin(true);
 
@@ -108,6 +124,7 @@ export const EstatisticasPage = () => {
             return;
         }
 
+        setAlunoId(tokenDecoded.id);
         setIsAdmin(false);
 
         findUsuarioById(tokenDecoded.id)
@@ -117,6 +134,69 @@ export const EstatisticasPage = () => {
                 setAlunoNome("Aluno");
             });
     }, [showError]);
+
+    // Carrega as datas das avaliacoes (dobras e circunferencias) do aluno selecionado.
+    useEffect(() => {
+        if (!alunoId) {
+            setDatasDobras([]);
+            setDatasCircunferencias([]);
+            setDataInicial("");
+            setDataFinal("");
+            setCarregandoDatas(false);
+            return;
+        }
+
+        let cancelado = false;
+
+        setCarregandoDatas(true);
+        setDataInicial("");
+        setDataFinal("");
+
+        Promise.allSettled([
+            findAllDobrasByAlunoId(alunoId),
+            findAllCircunferenciasByAlunoId(alunoId),
+        ])
+            .then(([dobras, circunferencias]) => {
+                if (cancelado) return;
+
+                setDatasDobras(
+                    dobras.status === "fulfilled" ? ordenarDatas(extrairDatas(dobras.value)) : []
+                );
+                setDatasCircunferencias(
+                    circunferencias.status === "fulfilled"
+                        ? ordenarDatas(extrairDatas(circunferencias.value))
+                        : []
+                );
+
+                if (dobras.status === "rejected" || circunferencias.status === "rejected") {
+                    console.error("Erro ao carregar as datas das avaliações: ", {
+                        dobras: dobras.status === "rejected" ? dobras.reason : undefined,
+                        circunferencias:
+                            circunferencias.status === "rejected" ? circunferencias.reason : undefined,
+                    });
+                }
+            })
+            .finally(() => {
+                if (!cancelado) {
+                    setCarregandoDatas(false);
+                }
+            });
+
+        return () => {
+            cancelado = true;
+        };
+    }, [alunoId]);
+
+    const datasDisponiveis = useMemo(
+        () => ordenarDatas([...datasDobras, ...datasCircunferencias]),
+        [datasDobras, datasCircunferencias]
+    );
+
+    // No comparativo, a data final so pode ser igual ou posterior a data inicial.
+    const datasFinaisDisponiveis = useMemo(
+        () => datasDisponiveis.filter((data) => !dataInicial || data >= dataInicial),
+        [datasDisponiveis, dataInicial]
+    );
 
     const fecharPreVisualizacao = () => {
         if (pdfUrlRef.current) {
@@ -141,6 +221,23 @@ export const EstatisticasPage = () => {
             setDataFinal("");
         }
     };
+
+    const handleAlterarDataInicial = (data: string) => {
+        setDataInicial(data);
+
+        if (dataFinal && dataFinal < data) {
+            setDataFinal("");
+        }
+    };
+
+    const textoPlaceholderData = (() => {
+        if (!alunoId) return "Selecione um aluno primeiro";
+        if (carregandoDatas) return "Carregando avaliações...";
+        if (datasDisponiveis.length === 0) return "Nenhuma avaliação encontrada para este aluno";
+        return tipoRelatorio === "unica"
+            ? "Selecione a data da avaliação"
+            : "Selecione a data inicial";
+    })();
 
     const handleGerarRelatorio = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -264,13 +361,20 @@ export const EstatisticasPage = () => {
                                 <label htmlFor="dataInicial" className="text-md font-medium text-gray-700">
                                     {tipoRelatorio === "unica" ? "Data da avaliação" : "Data inicial"}
                                 </label>
-                                <input
+                                <select
                                     id="dataInicial"
-                                    type="date"
                                     value={dataInicial}
-                                    onChange={(event) => setDataInicial(event.target.value)}
-                                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                                />
+                                    onChange={(event) => handleAlterarDataInicial(event.target.value)}
+                                    disabled={!alunoId || carregandoDatas || datasDisponiveis.length === 0}
+                                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+                                >
+                                    <option value="">{textoPlaceholderData}</option>
+                                    {datasDisponiveis.map((data) => (
+                                        <option key={data} value={data}>
+                                            {converterData(data)}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
                             {tipoRelatorio === "comparativo" && (
@@ -278,14 +382,28 @@ export const EstatisticasPage = () => {
                                     <label htmlFor="dataFinal" className="text-md font-medium text-gray-700">
                                         Data final
                                     </label>
-                                    <input
+                                    <select
                                         id="dataFinal"
-                                        type="date"
                                         value={dataFinal}
-                                        min={dataInicial || undefined}
                                         onChange={(event) => setDataFinal(event.target.value)}
-                                        className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                                    />
+                                        disabled={!alunoId || carregandoDatas || datasFinaisDisponiveis.length === 0}
+                                        className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+                                    >
+                                        <option value="">
+                                            {!alunoId
+                                                ? "Selecione um aluno primeiro"
+                                                : carregandoDatas
+                                                    ? "Carregando avaliações..."
+                                                    : datasFinaisDisponiveis.length === 0
+                                                        ? "Nenhuma avaliação posterior à data inicial"
+                                                        : "Selecione a data final"}
+                                        </option>
+                                        {datasFinaisDisponiveis.map((data) => (
+                                            <option key={data} value={data}>
+                                                {converterData(data)}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             )}
                         </div>
