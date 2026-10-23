@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Usuario } from "../interfaces/Usuario";
+import { generoLabel } from "../interfaces/Genero";
 import { ModalDelete } from "./ModalDelete";
 import { deleteUsuarioById } from "../services/UsuarioService";
 import { useFeedbackModal } from "../hooks/useFeedbackModal";
@@ -71,7 +72,7 @@ export const ListaAlunos = ({ isAdmin, usuarios, setUsuarios, onEdit }: ListaAlu
                             </span>
                         </div>
                         <p className="text-sm text-gray-600">Idade: {usuario.idade}</p>
-                        <p className="text-sm text-gray-600">Sexo: {usuario.sexo}</p>
+                        <p className="text-sm text-gray-600">Gênero: {generoLabel(usuario.genero)}</p>
                         <p className="text-sm text-gray-600">Login: {usuario.login}</p>
 
                         {isAdmin && (
@@ -101,7 +102,7 @@ export const ListaAlunos = ({ isAdmin, usuarios, setUsuarios, onEdit }: ListaAlu
                         <tr className="border-b border-gray-200 text-gray-700">
                             <th className="p-4 text-center">Nome</th>
                             <th className="p-4 text-center">Idade</th>
-                            <th className="p-4 text-center">Sexo</th>
+                            <th className="p-4 text-center">Gênero</th>
                             <th className="p-4 text-center">Login</th>
                             <th className="p-4 text-center">Perfil</th>
                             {isAdmin && <th className="p-4 text-center">Ações</th>}
@@ -112,7 +113,7 @@ export const ListaAlunos = ({ isAdmin, usuarios, setUsuarios, onEdit }: ListaAlu
                             <tr key={usuario.id ?? index} className="text-center hover:bg-gray-50">
                                 <td className="p-2 text-gray-800">{usuario.nome}</td>
                                 <td className="p-2">{usuario.idade}</td>
-                                <td className="p-2">{usuario.sexo}</td>
+                                <td className="p-2">{generoLabel(usuario.genero)}</td>
                                 <td className="p-2">{usuario.login}</td>
                                 <td className="p-2">{usuario.role}</td>
                                 {isAdmin && (

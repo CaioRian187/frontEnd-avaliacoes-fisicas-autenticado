@@ -1,3 +1,5 @@
+import type { GeneroEnum } from "./Genero";
+
 export interface DobraCutanea {
     id: string | number;
     data?: string;
@@ -15,6 +17,6 @@ export interface DobraCutanea {
         id?: string;
         nome?: string;
         idade?: number;
-        sexo?: string;
+        genero?: GeneroEnum;
     };
 }

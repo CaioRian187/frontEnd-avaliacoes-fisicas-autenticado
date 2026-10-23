@@ -1,3 +1,5 @@
+import type { GeneroEnum } from "./Genero";
+
 export interface Circunferencia {
     id: string | number;
     data?: string;
@@ -27,6 +29,6 @@ export interface Circunferencia {
         id?: string;
         nome?: string;
         idade: number;
-        sexo: string;
+        genero: GeneroEnum;
     }
 }
