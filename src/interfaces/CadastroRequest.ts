@@ -1,7 +1,9 @@
+import type { GeneroEnum } from "./Genero";
+
 export interface CadastroRequest {
     nome: string,
     idade: number,
-    sexo: string,
+    genero: GeneroEnum,
     login: string,
     password: string
 }

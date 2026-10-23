@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Input } from "../components/Input";
 import { handleCadastro } from "../services/AuthService";
 import type { CadastroRequest } from "../interfaces/CadastroRequest";
+import { GENERO_OPTIONS, type GeneroEnum } from "../interfaces/Genero";
 import { Link, useNavigate } from "react-router-dom";
 import { BotaoVoltar } from "../components/BotaoVoltar";
 import { useFeedbackModal } from "../hooks/useFeedbackModal";
@@ -12,7 +13,7 @@ export const CasdastroPage = () => {
 
     const [nome, setNome] = useState("");
     const [idade, setIdade] = useState<number | string>("");
-    const [sexo, setSexo] = useState("");
+    const [genero, setGenero] = useState<GeneroEnum | "">("");
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
 
@@ -22,7 +23,7 @@ export const CasdastroPage = () => {
     const handleSubmitForm = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!nome || !idade || !sexo || !login || !password) {
+        if (!nome || !idade || !genero || !login || !password) {
             showWarning("Por favor, preencha todos os campos!");
             return;
         }
@@ -30,7 +31,7 @@ export const CasdastroPage = () => {
         const cadastroRequest: CadastroRequest = {
             nome: nome,
             idade: Number(idade),
-            sexo: sexo,
+            genero: genero,
             login: login,
             password: password
         }
@@ -94,17 +95,18 @@ export const CasdastroPage = () => {
 
                             <div className="flex flex-col gap-.5">
                                 <label className="text-lg font-medium text-slate-700">
-                                    Sexo
+                                    Gênero
                                 </label>
 
                                 <select
                                     className="w-full px-4 py-2.5 rounded-lg border-2 border-blue-200"
-                                    value={sexo}
-                                    onChange={(e) => setSexo(e.target.value)}
+                                    value={genero}
+                                    onChange={(e) => setGenero(e.target.value as GeneroEnum)}
                                 >
-                                    <option value="" disabled hidden>Selecione o sexo</option>
-                                    <option value="MASCULINO">Masculino</option>
-                                    <option value="FEMININO">Feminino</option>
+                                    <option value="" disabled hidden>Selecione o gênero</option>
+                                    {GENERO_OPTIONS.map((opcao) => (
+                                        <option key={opcao.value} value={opcao.value}>{opcao.label}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>

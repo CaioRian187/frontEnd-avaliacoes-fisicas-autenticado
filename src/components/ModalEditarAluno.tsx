@@ -3,6 +3,7 @@ import { Input } from "./Input";
 import { updateUsuario } from "../services/UsuarioService";
 import type { Usuario } from "../interfaces/Usuario";
 import type { UsuarioUpdateRequest } from "../interfaces/UsuarioRequest";
+import { GENERO_OPTIONS, type GeneroEnum } from "../interfaces/Genero";
 import { useFeedbackModal } from "../hooks/useFeedbackModal";
 
 interface ModalEditarAlunoProps {
@@ -18,19 +19,19 @@ export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose, titu
     const { showSuccess, showWarning, showError } = useFeedbackModal();
     const [nome, setNome] = useState(usuario.nome ?? "");
     const [idade, setIdade] = useState<number | string>(usuario.idade ?? "");
-    const [sexo, setSexo] = useState(usuario.sexo ?? "");
+    const [genero, setGenero] = useState<GeneroEnum | "">(usuario.genero ?? "");
 
     // Sincroniza os campos caso o aluno selecionado para edicao mude.
     useEffect(() => {
         setNome(usuario.nome ?? "");
         setIdade(usuario.idade ?? "");
-        setSexo(usuario.sexo ?? "");
+        setGenero(usuario.genero ?? "");
     }, [usuario]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!nome || idade === "" || !sexo) {
+        if (!nome || idade === "" || !genero) {
             showWarning("Por favor, preencha todos os campos!");
             return;
         }
@@ -40,7 +41,7 @@ export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose, titu
         const request: UsuarioUpdateRequest = {
             nome: nome,
             idade: Number(idade),
-            sexo: sexo,
+            genero: genero,
         };
 
         try {
@@ -92,15 +93,16 @@ export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose, titu
 
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-lg font-medium text-slate-700">Sexo</label>
+                                <label className="text-lg font-medium text-slate-700">Gênero</label>
                                 <select
                                     className="w-full px-4 py-2.5 rounded-lg border-2 border-blue-200"
-                                    value={sexo}
-                                    onChange={(e) => setSexo(e.target.value)}
+                                    value={genero}
+                                    onChange={(e) => setGenero(e.target.value as GeneroEnum)}
                                 >
-                                    <option value="" disabled hidden>Selecione o sexo</option>
-                                    <option value="MASCULINO">Masculino</option>
-                                    <option value="FEMININO">Feminino</option>
+                                    <option value="" disabled hidden>Selecione o gênero</option>
+                                    {GENERO_OPTIONS.map((opcao) => (
+                                        <option key={opcao.value} value={opcao.value}>{opcao.label}</option>
+                                    ))}
                                 </select>
                             </div>
 
