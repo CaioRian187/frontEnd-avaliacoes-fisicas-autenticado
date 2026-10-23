@@ -337,10 +337,11 @@ export const TreinosTab = ({ isAdmin }: TreinosTabProps) => {
                     Nenhum exercício adicionado a este dia.
                 </div>
             ) : (
-                drafts.map((draft) => (
+                drafts.map((draft, index) => (
                     <ExercicioTreinoCard
                         key={draft.exercicio.id}
                         draft={draft}
+                        numero={index + 1}
                         readOnly={readOnly}
                         onChange={readOnly ? undefined : atualizarDraft}
                         onRemove={readOnly ? undefined : () => removerExercicio(draft.exercicio.id)}
