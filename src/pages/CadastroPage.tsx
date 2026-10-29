@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { BotaoVoltar } from "../components/BotaoVoltar";
 import { useFeedbackModal } from "../hooks/useFeedbackModal";
 import { extrairMensagemErro } from "../utils/ErrorUtils";
+import { CampoListaStrings } from "../components/CampoListaStrings";
+import { listasObrigatoriasValidas } from "../utils/ListaStrings";
 
 
 export const CasdastroPage = () => {
@@ -16,6 +18,8 @@ export const CasdastroPage = () => {
     const [genero, setGenero] = useState<GeneroEnum | "">("");
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
+    const [deficiencias, setDeficiencias] = useState<string[]>([]);
+    const [lezoes, setLezoes] = useState<string[]>([]);
 
     const navigate = useNavigate();
     const { showFeedback, showWarning, showError } = useFeedbackModal();
@@ -28,12 +32,19 @@ export const CasdastroPage = () => {
             return;
         }
 
+        if (!listasObrigatoriasValidas(deficiencias, lezoes)) {
+            showWarning("Responda as perguntas sobre deficiência e lesão ou adicione ao menos um item em cada uma.");
+            return;
+        }
+
         const cadastroRequest: CadastroRequest = {
             nome: nome,
             idade: Number(idade),
             genero: genero,
             login: login,
-            password: password
+            password: password,
+            deficiencias: deficiencias,
+            lezoes: lezoes
         }
 
         try {
@@ -139,6 +150,22 @@ export const CasdastroPage = () => {
                             </div>
                         </div>
 
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start border-t border-gray-200 pt-5">
+                        <CampoListaStrings
+                            pergunta="Possui alguma deficiência?"
+                            placeholder="Descreva a deficiência"
+                            valores={deficiencias}
+                            onChange={setDeficiencias}
+                        />
+
+                        <CampoListaStrings
+                            pergunta="Possui alguma lesão?"
+                            placeholder="Descreva a lesão"
+                            valores={lezoes}
+                            onChange={setLezoes}
+                        />
                     </div>
 
 
