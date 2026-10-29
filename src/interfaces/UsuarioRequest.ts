@@ -5,4 +5,6 @@ export interface UsuarioUpdateRequest {
     nome: string;
     idade: number;
     genero: GeneroEnum;
+    deficiencias: string[];
+    lezoes: string[];
 }

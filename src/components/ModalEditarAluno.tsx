@@ -5,6 +5,8 @@ import type { Usuario } from "../interfaces/Usuario";
 import type { UsuarioUpdateRequest } from "../interfaces/UsuarioRequest";
 import { GENERO_OPTIONS, type GeneroEnum } from "../interfaces/Genero";
 import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { CampoListaStrings } from "./CampoListaStrings";
+import { listasObrigatoriasValidas } from "../utils/ListaStrings";
 
 interface ModalEditarAlunoProps {
     usuario: Usuario;
@@ -14,18 +16,22 @@ interface ModalEditarAlunoProps {
     titulo?: string;
 }
 
-export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose, titulo = "Editar Aluno" }: ModalEditarAlunoProps) => {
+const ModalEditarAlunoForm = ({ usuario, usuarios, setUsuarios, onClose, titulo = "Editar Aluno" }: ModalEditarAlunoProps) => {
 
     const { showSuccess, showWarning, showError } = useFeedbackModal();
     const [nome, setNome] = useState(usuario.nome ?? "");
     const [idade, setIdade] = useState<number | string>(usuario.idade ?? "");
     const [genero, setGenero] = useState<GeneroEnum | "">(usuario.genero ?? "");
+    const [deficiencias, setDeficiencias] = useState<string[]>(usuario.deficiencias ?? []);
+    const [lezoes, setLezoes] = useState<string[]>(usuario.lezoes ?? []);
 
     // Sincroniza os campos caso o aluno selecionado para edicao mude.
     useEffect(() => {
         setNome(usuario.nome ?? "");
         setIdade(usuario.idade ?? "");
         setGenero(usuario.genero ?? "");
+        setDeficiencias(usuario.deficiencias ?? []);
+        setLezoes(usuario.lezoes ?? []);
     }, [usuario]);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -36,12 +42,22 @@ export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose, titu
             return;
         }
 
-        if (!usuario.id) return;
+        if (!listasObrigatoriasValidas(deficiencias, lezoes)) {
+            showWarning("Responda as perguntas sobre deficiência e lesão ou adicione ao menos um item em cada uma.");
+            return;
+        }
+
+        if (!usuario.id) {
+            showError("Usuário inválido. Não foi possível atualizar os dados.");
+            return;
+        }
 
         const request: UsuarioUpdateRequest = {
             nome: nome,
             idade: Number(idade),
             genero: genero,
+            deficiencias: deficiencias,
+            lezoes: lezoes,
         };
 
         try {
@@ -119,6 +135,24 @@ export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose, titu
 
                     </div>
 
+                    <div className="w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 gap-6 items-start border-t border-gray-200 pt-5">
+                        <CampoListaStrings
+                            key={`deficiencias-${usuario.id ?? "novo"}`}
+                            pergunta="Possui alguma deficiência?"
+                            placeholder="Descreva a deficiência"
+                            valores={deficiencias}
+                            onChange={setDeficiencias}
+                        />
+
+                        <CampoListaStrings
+                            key={`lezoes-${usuario.id ?? "novo"}`}
+                            pergunta="Possui alguma lesão?"
+                            placeholder="Descreva a lesão"
+                            valores={lezoes}
+                            onChange={setLezoes}
+                        />
+                    </div>
+
                     {/* Responsividade: botoes empilham em mobile e voltam a row a partir de sm */}
                     <div className="w-full max-w-3xl flex flex-col sm:flex-row gap-4">
                         <button
@@ -140,3 +174,10 @@ export const ModalEditarAluno = ({ usuario, usuarios, setUsuarios, onClose, titu
         </div>
     );
 }
+
+// Remonta o formulario inteiro quando o usuario em edicao muda. Isso evita que
+// estados internos (ex: resposta Sim/Nao do CampoListaStrings) fiquem presos aos
+// dados do usuario anterior enquanto o useEffect de sincronizacao ainda nao rodou.
+export const ModalEditarAluno = (props: ModalEditarAlunoProps) => (
+    <ModalEditarAlunoForm key={props.usuario.id ?? "novo"} {...props} />
+);
