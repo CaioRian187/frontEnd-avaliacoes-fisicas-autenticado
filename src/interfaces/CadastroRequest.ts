@@ -5,5 +5,7 @@ export interface CadastroRequest {
     idade: number,
     genero: GeneroEnum,
     login: string,
-    password: string
+    password: string,
+    deficiencias: string[],
+    lezoes: string[]
 }

@@ -5,6 +5,8 @@ export interface Usuario {
     nome?: string;
     idade?: number;
     genero?: GeneroEnum;
+    deficiencias?: string[];
+    lezoes?: string[];
     login?: string;
     password?: string;
     role?: string;
