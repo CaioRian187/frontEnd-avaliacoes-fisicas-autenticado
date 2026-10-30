@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import React, { useEffect, useState } from "react";
 import { Input } from "./Input";
 import type { DobraCutanea } from "../interfaces/DobraCutanea";
@@ -106,7 +107,7 @@ export const ModalEditarDobra = ({ dobra, dobras, setDobras, idAndNomeUsuarios, 
             onClose();
             showSuccess("Dobra cutânea atualizada com sucesso!");
         } catch (error) {
-            console.error("Erro ao atualizar dobra cutânea: ", error);
+            logError("Erro ao atualizar dobra cutânea: ", error);
             showError("Falha ao atualizar a dobra cutânea. Verifique os dados inseridos.");
         }
     }
