@@ -1,3 +1,4 @@
+import { logError } from "../../utils/logger";
 import { useEffect, useState, type FormEvent } from "react";
 import { GRUPO_MUSCULAR_LABELS, GRUPOS_MUSCULARES, type Exercicio, type ExercicioRequest, type GrupoMuscular } from "../../interfaces/Exercicio";
 import { createExercicio, deleteExercicio, updateExercicio } from "../../services/ExercicioService";
@@ -58,7 +59,7 @@ export const ExercicioFormModal = ({ isOpen, exercicio, onClose, onSaved, onDele
             showSuccess(exercicio ? "Exercício atualizado com sucesso!" : "Exercício cadastrado com sucesso!");
             onClose();
         } catch (error) {
-            console.error("Erro ao salvar exercício: ", error);
+            logError("Erro ao salvar exercício: ", error);
             showError(extrairMensagemErro(error, "Não foi possível salvar o exercício."));
         } finally {
             setSalvando(false);
@@ -76,7 +77,7 @@ export const ExercicioFormModal = ({ isOpen, exercicio, onClose, onSaved, onDele
             showSuccess("Exercício removido do catálogo.");
             onClose();
         } catch (error) {
-            console.error("Erro ao excluir exercício: ", error);
+            logError("Erro ao excluir exercício: ", error);
             showError(extrairMensagemErro(error, "Não foi possível excluir o exercício. Ele pode estar vinculado a um treino."));
         } finally {
             setSalvando(false);

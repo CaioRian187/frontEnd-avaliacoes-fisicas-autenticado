@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import axios from "axios";
 import type { DiaSemana, Treino, TreinoRequest } from "../interfaces/Treino";
 
@@ -21,7 +22,7 @@ export const createTreino = async (treino: TreinoRequest): Promise<Treino> => {
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao cadastrar treino: ", error);
+        logError("Erro ao cadastrar treino: ", error);
         throw error;
     }
 };
@@ -37,7 +38,7 @@ export const findAllTreinosByAlunoId = async (alunoId: string, diaSemana?: DiaSe
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao listar treinos do aluno: ", error);
+        logError("Erro ao listar treinos do aluno: ", error);
         throw error;
     }
 };
@@ -53,7 +54,7 @@ export const findMeusTreinos = async (diaSemana?: DiaSemana): Promise<Treino[]> 
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao listar meus treinos: ", error);
+        logError("Erro ao listar meus treinos: ", error);
         throw error;
     }
 };
@@ -65,7 +66,7 @@ export const deleteTreino = async (id: string): Promise<void> => {
             buildAuthHeaders()
         );
     } catch (error) {
-        console.error("Erro ao excluir treino: ", error);
+        logError("Erro ao excluir treino: ", error);
         throw error;
     }
 };

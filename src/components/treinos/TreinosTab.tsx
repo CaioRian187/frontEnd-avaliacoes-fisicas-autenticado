@@ -1,3 +1,4 @@
+import { logError } from "../../utils/logger";
 import { useCallback, useEffect, useState } from "react";
 import { useFeedbackModal } from "../../hooks/useFeedback";
 import { GRUPO_MUSCULAR_LABELS, type Exercicio } from "../../interfaces/Exercicio";
@@ -85,7 +86,7 @@ export const TreinosTab = ({ isAdmin }: TreinosTabProps) => {
                 if (ativo) setCatalogo(lista);
             })
             .catch((error: unknown) => {
-                console.error("Erro ao carregar catálogo de exercícios: ", error);
+                logError("Erro ao carregar catálogo de exercícios: ", error);
                 showError(extrairMensagemErro(error, "Não foi possível carregar o catálogo de exercícios."));
             });
 
@@ -113,7 +114,7 @@ export const TreinosTab = ({ isAdmin }: TreinosTabProps) => {
                 );
             })
             .catch((error: unknown) => {
-                console.error("Erro ao carregar alunos: ", error);
+                logError("Erro ao carregar alunos: ", error);
                 showError("Não foi possível carregar a lista de alunos.");
             });
 
@@ -137,7 +138,7 @@ export const TreinosTab = ({ isAdmin }: TreinosTabProps) => {
 
             setTreinoDoDia(lista[0] ?? null);
         } catch (error) {
-            console.error("Erro ao carregar treino do dia: ", error);
+            logError("Erro ao carregar treino do dia: ", error);
             showError(extrairMensagemErro(error, "Não foi possível carregar o treino do dia selecionado."));
         } finally {
             setCarregando(false);
@@ -301,7 +302,7 @@ export const TreinosTab = ({ isAdmin }: TreinosTabProps) => {
                 try {
                     await deleteTreino(treinoDoDia.id);
                 } catch (error) {
-                    console.error("Treino criado, mas não foi possível remover o antigo: ", error);
+                    logError("Treino criado, mas não foi possível remover o antigo: ", error);
                     showWarning("Treino salvo, mas não foi possível remover a versão anterior.");
                 }
             }
@@ -309,7 +310,7 @@ export const TreinosTab = ({ isAdmin }: TreinosTabProps) => {
             showSuccess(treinoDoDia ? "Treino atualizado com sucesso!" : "Treino cadastrado com sucesso!");
             await carregarTreinoDoDia();
         } catch (error) {
-            console.error("Erro ao salvar treino: ", error);
+            logError("Erro ao salvar treino: ", error);
             showError(extrairMensagemErro(error, "Não foi possível salvar o treino."));
         } finally {
             setSalvando(false);
@@ -325,7 +326,7 @@ export const TreinosTab = ({ isAdmin }: TreinosTabProps) => {
             showSuccess("Treino excluído com sucesso!");
             await carregarTreinoDoDia();
         } catch (error) {
-            console.error("Erro ao excluir treino: ", error);
+            logError("Erro ao excluir treino: ", error);
             showError(extrairMensagemErro(error, "Não foi possível excluir o treino."));
         }
     };

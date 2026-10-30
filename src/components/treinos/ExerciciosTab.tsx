@@ -1,3 +1,4 @@
+import { logError } from "../../utils/logger";
 import { useCallback, useEffect, useState } from "react";
 import { useFeedbackModal } from "../../hooks/useFeedback";
 import { GRUPO_MUSCULAR_LABELS, type Exercicio } from "../../interfaces/Exercicio";
@@ -24,7 +25,7 @@ export const ExerciciosTab = () => {
             const lista = await findAllExercicios();
             setExercicios(lista);
         } catch (error) {
-            console.error("Erro ao carregar catálogo de exercícios: ", error);
+            logError("Erro ao carregar catálogo de exercícios: ", error);
             showError(extrairMensagemErro(error, "Não foi possível carregar o catálogo de exercícios."));
         } finally {
             setCarregando(false);
@@ -70,7 +71,7 @@ export const ExerciciosTab = () => {
             setExercicioParaDeletar(null);
             showSuccess("Exercício excluído do catálogo.");
         } catch (error) {
-            console.error("Erro ao excluir exercício: ", error);
+            logError("Erro ao excluir exercício: ", error);
             showError(
                 extrairMensagemErro(
                     error,
