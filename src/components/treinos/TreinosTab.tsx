@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useFeedbackModal } from "../../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../../hooks/useFeedback";
 import { GRUPO_MUSCULAR_LABELS, type Exercicio } from "../../interfaces/Exercicio";
 import {
     DIA_SEMANA_ABREVIADO,

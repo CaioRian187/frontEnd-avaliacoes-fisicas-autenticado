@@ -3,7 +3,7 @@ import { Input } from "./Input";
 import type { DobraCutanea } from "../interfaces/DobraCutanea";
 import type { DobrasRequest } from "../interfaces/DobrasRequest";
 import { updateDobra } from "../services/DobraService";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 interface ModalEditarDobraProps {
     dobra: DobraCutanea;

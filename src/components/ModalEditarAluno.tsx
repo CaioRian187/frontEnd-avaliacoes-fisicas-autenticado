@@ -4,7 +4,7 @@ import { updateUsuario } from "../services/UsuarioService";
 import type { Usuario } from "../interfaces/Usuario";
 import type { UsuarioUpdateRequest } from "../interfaces/UsuarioRequest";
 import { GENERO_OPTIONS, type GeneroEnum } from "../interfaces/Genero";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 import { CampoListaStrings } from "./CampoListaStrings";
 import { listasObrigatoriasValidas } from "../utils/ListaStrings";
 

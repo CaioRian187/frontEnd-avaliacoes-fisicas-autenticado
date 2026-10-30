@@ -3,7 +3,7 @@ import { Input } from "./Input";
 import type { Circunferencia } from "../interfaces/Circunferencia";
 import type { CircunferenciasRequest } from "../interfaces/CircunferenciasRequest";
 import { updateCircunferencia } from "../services/CircunferenciaService";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 interface ModalEditarCircunferenciaProps {
     circunferencia: Circunferencia;

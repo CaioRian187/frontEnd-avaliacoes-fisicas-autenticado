@@ -15,7 +15,7 @@ vi.mock("../services/UsuarioService", () => ({
   updateUsuario: mocks.updateUsuario,
 }));
 
-vi.mock("../hooks/useFeedbackModal", () => ({
+vi.mock("../hooks/useFeedback", () => ({
   useFeedbackModal: () => ({
     showSuccess: mocks.showSuccess,
     showWarning: mocks.showWarning,

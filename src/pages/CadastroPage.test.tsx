@@ -15,7 +15,7 @@ vi.mock("../services/AuthService", () => ({
   handleCadastro: mocks.handleCadastro,
 }));
 
-vi.mock("../hooks/useFeedbackModal", () => ({
+vi.mock("../hooks/useFeedback", () => ({
   useFeedbackModal: () => ({
     showFeedback: mocks.showFeedback,
     showWarning: mocks.showWarning,

@@ -3,7 +3,7 @@ import { converterData } from "../utils/ConverterData";
 import type { DobraCutanea } from "../interfaces/DobraCutanea";
 import { ModalDelete } from "./ModalDelete";
 import { deleteDobraById } from "../services/DobraService";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 type MedidaKey =
     | "biceps"

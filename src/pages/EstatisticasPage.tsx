@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { BotaoVoltar } from "../components/BotaoVoltar";
 import { PdfViewerModal } from "../components/PdfViewerModal";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 import type { TipoRelatorio } from "../interfaces/Relatorio";
 import { findAllCircunferenciasByAlunoId } from "../services/CircunferenciaService";
 import { findAllDobrasByAlunoId } from "../services/DobraService";

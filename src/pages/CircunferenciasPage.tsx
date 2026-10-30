@@ -8,7 +8,7 @@ import { ModalEditarCircunferencia } from "../components/ModalEditarCircunferenc
 import type { Usuario } from "../interfaces/Usuario";
 import { findAllUsuariosProjetions } from "../services/UsuarioService";
 import { BotaoVoltar } from "../components/BotaoVoltar";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 export const CircunferenciasPage = () => {
 

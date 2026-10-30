@@ -6,7 +6,7 @@ import { ModalEditarAluno } from "../components/ModalEditarAluno";
 import { ListaAlunos } from "../components/ListaAlunos";
 import { Input } from "../components/Input";
 import { BotaoVoltar } from "../components/BotaoVoltar";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 export const AlunosPage = () => {
 

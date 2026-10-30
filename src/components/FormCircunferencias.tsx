@@ -3,7 +3,7 @@ import { Input } from "./Input";
 import type { CircunferenciasRequest } from "../interfaces/CircunferenciasRequest";
 import { createCircunferencia } from "../services/CircunferenciaService";
 import type { Circunferencia } from "../interfaces/Circunferencia";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 interface FormCircunferenciasProps {
     idAndNomeUsuarios: { id: string; nome: string }[];

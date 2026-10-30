@@ -5,7 +5,7 @@ import type { CadastroRequest } from "../interfaces/CadastroRequest";
 import { GENERO_OPTIONS, type GeneroEnum } from "../interfaces/Genero";
 import { Link, useNavigate } from "react-router-dom";
 import { BotaoVoltar } from "../components/BotaoVoltar";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 import { extrairMensagemErro } from "../utils/ErrorUtils";
 import { CampoListaStrings } from "../components/CampoListaStrings";
 import { listasObrigatoriasValidas } from "../utils/ListaStrings";

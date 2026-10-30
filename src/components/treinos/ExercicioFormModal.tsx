@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { GRUPO_MUSCULAR_LABELS, GRUPOS_MUSCULARES, type Exercicio, type ExercicioRequest, type GrupoMuscular } from "../../interfaces/Exercicio";
 import { createExercicio, deleteExercicio, updateExercicio } from "../../services/ExercicioService";
-import { useFeedbackModal } from "../../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../../hooks/useFeedback";
 import { extrairMensagemErro } from "../../utils/ErrorUtils";
 
 interface ExercicioFormModalProps {

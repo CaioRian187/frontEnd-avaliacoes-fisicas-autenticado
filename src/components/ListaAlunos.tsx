@@ -3,7 +3,7 @@ import type { Usuario } from "../interfaces/Usuario";
 import { generoLabel } from "../interfaces/Genero";
 import { ModalDelete } from "./ModalDelete";
 import { deleteUsuarioById } from "../services/UsuarioService";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 import { extrairMensagemErro } from "../utils/ErrorUtils";
 
 interface ListaAlunosProps {
