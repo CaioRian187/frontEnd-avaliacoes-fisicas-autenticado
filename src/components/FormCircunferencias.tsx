@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import React, { useState } from "react";
 import { Input } from "./Input";
 import type { CircunferenciasRequest } from "../interfaces/CircunferenciasRequest";
@@ -122,7 +123,7 @@ export const FormCircunferencias = ({ idAndNomeUsuarios, circunferencias, setCir
             showSuccess("Circunferência cadastrada com sucesso!");
 
         } catch (error) {
-            console.error("Erro ao cadastrar a circunferência", error);
+            logError("Erro ao cadastrar a circunferência", error);
             throw error;
         }
 

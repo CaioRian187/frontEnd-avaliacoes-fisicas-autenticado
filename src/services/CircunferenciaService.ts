@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import axios from "axios";
 import type { Circunferencia } from "../interfaces/Circunferencia";
 import type { CircunferenciasRequest } from "../interfaces/CircunferenciasRequest";
@@ -23,7 +24,7 @@ export const findAllCircunferenciasByAlunoId = async (alunoId: string): Promise<
         );
         return response.data;
     } catch (error) {
-        console.error(error);
+        logError(error);
         throw error;
     }
 }
@@ -37,7 +38,7 @@ export const findCircunferenciaById = async (id: string | number): Promise<Circu
         );
         return response.data;
     } catch (error) {
-        console.error(error);
+        logError(error);
         throw error;
     }
 }
@@ -50,10 +51,9 @@ export const createCircunferencia = async (circunferencias: CircunferenciasReque
             circunferencias,
             buildAuthHeaders()
         );
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.error(error);
+        logError(error);
         throw error;
     }
 }
@@ -71,7 +71,7 @@ export const updateCircunferencia = async (
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao atualizar circunferência: ", error);
+        logError("Erro ao atualizar circunferência: ", error);
         throw error;
     }
 }
@@ -86,7 +86,7 @@ export const deleteCircunferenciasById = async (circunrenciaId: number) => {
             },
         })
     } catch (error) {
-        console.error(error);
+        logError(error);
         throw error;
     }
 }
