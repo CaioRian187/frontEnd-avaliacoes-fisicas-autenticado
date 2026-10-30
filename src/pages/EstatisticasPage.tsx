@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { BotaoVoltar } from "../components/BotaoVoltar";
@@ -117,7 +118,7 @@ export const EstatisticasPage = () => {
                     );
                 })
                 .catch((error: unknown) => {
-                    console.error("Erro ao carregar alunos: ", error);
+                    logError("Erro ao carregar alunos: ", error);
                     showError("Não foi possível carregar a lista de alunos.");
                 });
 
@@ -130,7 +131,7 @@ export const EstatisticasPage = () => {
         findUsuarioById(tokenDecoded.id)
             .then((usuario) => setAlunoNome(usuario.nome ?? "Aluno"))
             .catch((error: unknown) => {
-                console.error("Erro ao carregar os dados do usuário: ", error);
+                logError("Erro ao carregar os dados do usuário: ", error);
                 setAlunoNome("Aluno");
             });
     }, [showError]);
@@ -169,7 +170,7 @@ export const EstatisticasPage = () => {
                 );
 
                 if (dobras.status === "rejected" || circunferencias.status === "rejected") {
-                    console.error("Erro ao carregar as datas das avaliações: ", {
+                    logError("Erro ao carregar as datas das avaliações: ", {
                         dobras: dobras.status === "rejected" ? dobras.reason : undefined,
                         circunferencias:
                             circunferencias.status === "rejected" ? circunferencias.reason : undefined,
@@ -291,7 +292,7 @@ export const EstatisticasPage = () => {
             setNomeArquivo(`Relatorio_${nomeAluno}_${periodo}.pdf`);
             setPdfUrl(url);
         } catch (error) {
-            console.error("Erro ao gerar relatório: ", error);
+            logError("Erro ao gerar relatório: ", error);
             showError(await obterMensagemErro(error));
         } finally {
             setCarregando(false);
