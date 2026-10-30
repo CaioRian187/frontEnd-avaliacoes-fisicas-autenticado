@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Usuario } from "../interfaces/Usuario";
@@ -12,7 +13,7 @@ interface UserProfileDrawerProps {
     onClose: () => void;
 }
 
-// Monta as iniciais do nome/login para exibir no avatar do drawer.
+// Monta as iniciais do nome para exibir no avatar do drawer.
 const obterIniciais = (nome: string): string => {
     const partes = nome.trim().split(/\s+/).filter(Boolean);
 
@@ -62,7 +63,7 @@ export const UserProfileDrawer = ({ isOpen, onClose }: UserProfileDrawerProps) =
                 if (ativo) setUsuario(usuarioEncontrado);
             })
             .catch((error: unknown) => {
-                console.error("Erro ao carregar o perfil do usuário: ", error);
+                logError("Erro ao carregar o perfil do usuário: ", error);
             });
 
         return () => {
@@ -84,8 +85,7 @@ export const UserProfileDrawer = ({ isOpen, onClose }: UserProfileDrawerProps) =
 
     if (!shouldRender) return null;
 
-    const nome = usuario?.nome ?? tokenInfo?.sub ?? "Usuário";
-    const login = usuario?.login ?? tokenInfo?.sub ?? "-";
+    const nome = usuario?.nome ?? "Usuário";
     const role = usuario?.role ?? tokenInfo?.role ?? "-";
     const isAdmin = role === "ADMIN";
 
@@ -124,7 +124,6 @@ export const UserProfileDrawer = ({ isOpen, onClose }: UserProfileDrawerProps) =
 
                         <div className="min-w-0">
                             <h2 className="truncate text-lg font-bold text-gray-800">{nome}</h2>
-                            <p className="truncate text-sm text-gray-500">{login}</p>
                         </div>
                     </div>
 

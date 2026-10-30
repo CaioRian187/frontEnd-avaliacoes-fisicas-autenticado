@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import axios from "axios";
 import type { Usuario } from "../interfaces/Usuario";
 import type { UsuarioUpdateRequest } from "../interfaces/UsuarioRequest";
@@ -22,7 +23,7 @@ export const findAllUsuariosProjetions = async (): Promise<Usuario[]> => {
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao listar projeções de usuários: ", error);
+        logError("Erro ao listar projeções de usuários: ", error);
         throw error;
     }
 }
@@ -35,7 +36,7 @@ export const findAllUsuarios = async (): Promise<Usuario[]> => {
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao listar usuários: ", error);
+        logError("Erro ao listar usuários: ", error);
         throw error;
     }
 }
@@ -48,7 +49,7 @@ export const findUsuarioById = async (id: string): Promise<Usuario> => {
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao buscar usuário por id: ", error);
+        logError("Erro ao buscar usuário por id: ", error);
         throw error;
     }
 }
@@ -61,7 +62,7 @@ export const findUsuariosByNome = async (nome: string): Promise<Usuario[]> => {
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao buscar usuários por nome: ", error);
+        logError("Erro ao buscar usuários por nome: ", error);
         throw error;
     }
 }
@@ -75,7 +76,7 @@ export const updateUsuario = async (id: string, usuario: UsuarioUpdateRequest): 
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao atualizar usuário: ", error);
+        logError("Erro ao atualizar usuário: ", error);
         throw error;
     }
 }
@@ -87,7 +88,7 @@ export const deleteUsuarioById = async (id: string): Promise<void> => {
             buildAuthHeaders()
         );
     } catch (error) {
-        console.error("Erro ao deletar usuário: ", error);
+        logError("Erro ao deletar usuário: ", error);
         throw error;
     }
 }

@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import React, { useEffect, useState } from "react";
 import { Input } from "./Input";
 import { updateUsuario } from "../services/UsuarioService";
@@ -66,7 +67,7 @@ const ModalEditarAlunoForm = ({ usuario, usuarios, setUsuarios, onClose, titulo 
             onClose();
             showSuccess("Aluno atualizado com sucesso!");
         } catch (error) {
-            console.error("Erro ao atualizar aluno: ", error);
+            logError("Erro ao atualizar aluno: ", error);
             showError("Falha ao atualizar o aluno. Verifique os dados inseridos.");
         }
     }
@@ -122,15 +123,6 @@ const ModalEditarAlunoForm = ({ usuario, usuarios, setUsuarios, onClose, titulo 
                                 </select>
                             </div>
 
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-lg font-medium text-slate-700">Login (não editável)</label>
-                                <input
-                                    className="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 bg-gray-100 text-gray-500"
-                                    value={usuario.login ?? ""}
-                                    disabled
-                                    readOnly
-                                />
-                            </div>
                         </div>
 
                     </div>

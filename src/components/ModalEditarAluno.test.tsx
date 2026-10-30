@@ -28,7 +28,6 @@ const usuarioA: Usuario = {
   nome: "Ana",
   idade: 20,
   genero: "MULHER_CISGENERO",
-  login: "ana",
   deficiencias: ["cegueira"],
   lezoes: ["Não"],
 };
@@ -38,7 +37,6 @@ const usuarioB: Usuario = {
   nome: "Bruno",
   idade: 30,
   genero: "HOMEM_CISGENERO",
-  login: "bruno",
   deficiencias: ["Não"],
   lezoes: ["surdez"],
 };
@@ -90,6 +88,12 @@ describe("ModalEditarAluno", () => {
         lezoes: ["Não"],
       });
     });
+  });
+
+  it("não exibe o login do usuário", () => {
+    renderModal(usuarioA);
+
+    expect(screen.queryByText(/login/i)).not.toBeInTheDocument();
   });
 
   it("remonta o estado ao trocar o usuário em edição", () => {

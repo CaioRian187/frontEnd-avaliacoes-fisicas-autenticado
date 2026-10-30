@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import { useState } from "react";
 import type { Usuario } from "../interfaces/Usuario";
 import { generoLabel } from "../interfaces/Genero";
@@ -35,7 +36,7 @@ export const ListaAlunos = ({ isAdmin, usuarios, setUsuarios, onEdit }: ListaAlu
             setIdParaDeletar(null);
             showSuccess("Aluno excluído com sucesso!");
         } catch (error) {
-            console.error("Erro ao deletar aluno: ", error);
+            logError("Erro ao deletar aluno: ", error);
             showError(extrairMensagemErro(error, "Não foi possível excluir o aluno. Tente novamente."));
         }
     }
@@ -73,7 +74,6 @@ export const ListaAlunos = ({ isAdmin, usuarios, setUsuarios, onEdit }: ListaAlu
                         </div>
                         <p className="text-sm text-gray-600">Idade: {usuario.idade}</p>
                         <p className="text-sm text-gray-600">Gênero: {generoLabel(usuario.genero)}</p>
-                        <p className="text-sm text-gray-600">Login: {usuario.login}</p>
 
                         {isAdmin && (
                             <div className="flex flex-row gap-2 mt-2">
@@ -103,7 +103,6 @@ export const ListaAlunos = ({ isAdmin, usuarios, setUsuarios, onEdit }: ListaAlu
                             <th className="p-4 text-center">Nome</th>
                             <th className="p-4 text-center">Idade</th>
                             <th className="p-4 text-center">Gênero</th>
-                            <th className="p-4 text-center">Login</th>
                             <th className="p-4 text-center">Perfil</th>
                             {isAdmin && <th className="p-4 text-center">Ações</th>}
                         </tr>
@@ -114,7 +113,6 @@ export const ListaAlunos = ({ isAdmin, usuarios, setUsuarios, onEdit }: ListaAlu
                                 <td className="p-2 text-gray-800">{usuario.nome}</td>
                                 <td className="p-2">{usuario.idade}</td>
                                 <td className="p-2">{generoLabel(usuario.genero)}</td>
-                                <td className="p-2">{usuario.login}</td>
                                 <td className="p-2">{usuario.role}</td>
                                 {isAdmin && (
                                     <td className="p-2">
