@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import { useMemo, useState } from "react";
 import { converterData } from "../utils/ConverterData";
 import type { Circunferencia } from "../interfaces/Circunferencia";
@@ -118,7 +119,7 @@ export const ListaCircunferencias = ({ isAdmin, idAndNomeUsuarios, circunferenci
             setIsOpenModalDelete(false);
             setIdParaDeletar(null);
         } catch (error) {
-            console.error("Erro ao deletar Circunferência: ", error);
+            logError("Erro ao deletar Circunferência: ", error);
         }
     }
 

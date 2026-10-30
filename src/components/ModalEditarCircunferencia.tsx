@@ -1,9 +1,10 @@
+import { logError } from "../utils/logger";
 import React, { useEffect, useState } from "react";
 import { Input } from "./Input";
 import type { Circunferencia } from "../interfaces/Circunferencia";
 import type { CircunferenciasRequest } from "../interfaces/CircunferenciasRequest";
 import { updateCircunferencia } from "../services/CircunferenciaService";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 interface ModalEditarCircunferenciaProps {
     circunferencia: Circunferencia;
@@ -143,7 +144,7 @@ export const ModalEditarCircunferencia = ({
             onClose();
             showSuccess("Circunferência atualizada com sucesso!");
         } catch (error) {
-            console.error("Erro ao atualizar circunferência: ", error);
+            logError("Erro ao atualizar circunferência: ", error);
             showError("Falha ao atualizar a circunferência. Verifique os dados inseridos.");
         }
     }

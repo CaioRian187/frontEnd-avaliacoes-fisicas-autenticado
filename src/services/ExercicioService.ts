@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import axios from "axios";
 import type { Exercicio, ExercicioRequest, GrupoMuscular } from "../interfaces/Exercicio";
 
@@ -23,7 +24,7 @@ export const findAllExercicios = async (grupoMuscular?: GrupoMuscular): Promise<
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao listar exercícios: ", error);
+        logError("Erro ao listar exercícios: ", error);
         throw error;
     }
 };
@@ -37,7 +38,7 @@ export const createExercicio = async (exercicio: ExercicioRequest): Promise<Exer
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao cadastrar exercício: ", error);
+        logError("Erro ao cadastrar exercício: ", error);
         throw error;
     }
 };
@@ -51,7 +52,7 @@ export const updateExercicio = async (id: string, exercicio: ExercicioRequest): 
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao atualizar exercício: ", error);
+        logError("Erro ao atualizar exercício: ", error);
         throw error;
     }
 };
@@ -63,7 +64,7 @@ export const deleteExercicio = async (id: string): Promise<void> => {
             buildAuthHeaders()
         );
     } catch (error) {
-        console.error("Erro ao excluir exercício: ", error);
+        logError("Erro ao excluir exercício: ", error);
         throw error;
     }
 };

@@ -1,9 +1,10 @@
+import { logError } from "../utils/logger";
 import React, { useState } from "react";
 import { Input } from "./Input";
 import type { DobraCutanea } from "../interfaces/DobraCutanea";
 import type { DobrasRequest } from "../interfaces/DobrasRequest";
 import { createDobra } from "../services/DobraService";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 interface FormDobrasProps {
     idAndNomeUsuarios: { id: string; nome: string }[];
@@ -120,7 +121,7 @@ export const FormDobras = ({ idAndNomeUsuarios, dobras, setDobras }: FormDobrasP
             showSuccess("Dobra cutânea cadastrada com sucesso!");
 
         } catch (error) {
-            console.error("Erro ao cadastrar a dobra cutânea", error);
+            logError("Erro ao cadastrar a dobra cutânea", error);
             showError("Falha ao cadastrar a dobra cutânea. Verifique os dados inseridos.");
         }
     }

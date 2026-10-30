@@ -3,7 +3,7 @@ import { Input } from "../components/Input";
 import { handleLogin } from "../services/AuthService";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 import { extrairMensagemErro } from "../utils/ErrorUtils";
 
 

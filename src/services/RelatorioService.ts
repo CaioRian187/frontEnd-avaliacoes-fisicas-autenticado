@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import axios from "axios";
 import type { RelatorioPdfParams } from "../interfaces/Relatorio";
 
@@ -34,13 +35,13 @@ export const gerarRelatorioPdf = async (params: RelatorioPdfParams): Promise<Blo
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            console.error("Erro ao gerar relatório em PDF: ", {
+            logError("Erro ao gerar relatório em PDF: ", {
                 status: error.response?.status,
                 url: error.config?.url,
                 params: error.config?.params,
             });
         } else {
-            console.error("Erro ao gerar relatório em PDF: ", error);
+            logError("Erro ao gerar relatório em PDF: ", error);
         }
 
         throw error;

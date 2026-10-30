@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import axios from "axios";
 import type { DobraCutanea } from "../interfaces/DobraCutanea";
 import type { DobrasRequest } from "../interfaces/DobrasRequest";
@@ -22,7 +23,7 @@ export const findAllDobras = async (): Promise<DobraCutanea[]> => {
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao listar dobras cutâneas: ", error);
+        logError("Erro ao listar dobras cutâneas: ", error);
         throw error;
     }
 }
@@ -35,7 +36,7 @@ export const findAllDobrasByAlunoId = async (alunoId: string): Promise<DobraCuta
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao listar dobras cutâneas do aluno: ", error);
+        logError("Erro ao listar dobras cutâneas do aluno: ", error);
         throw error;
     }
 }
@@ -48,7 +49,7 @@ export const findDobraById = async (id: string | number): Promise<DobraCutanea> 
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao buscar dobra cutânea por id: ", error);
+        logError("Erro ao buscar dobra cutânea por id: ", error);
         throw error;
     }
 }
@@ -62,7 +63,7 @@ export const createDobra = async (dobra: DobrasRequest): Promise<DobraCutanea> =
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao cadastrar dobra cutânea: ", error);
+        logError("Erro ao cadastrar dobra cutânea: ", error);
         throw error;
     }
 }
@@ -76,7 +77,7 @@ export const updateDobra = async (id: string | number, dobra: DobrasRequest): Pr
         );
         return response.data;
     } catch (error) {
-        console.error("Erro ao atualizar dobra cutânea: ", error);
+        logError("Erro ao atualizar dobra cutânea: ", error);
         throw error;
     }
 }
@@ -88,7 +89,7 @@ export const deleteDobraById = async (id: string | number): Promise<void> => {
             buildAuthHeaders()
         );
     } catch (error) {
-        console.error("Erro ao deletar dobra cutânea: ", error);
+        logError("Erro ao deletar dobra cutânea: ", error);
         throw error;
     }
 }

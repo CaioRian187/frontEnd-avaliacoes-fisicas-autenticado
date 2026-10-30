@@ -1,13 +1,11 @@
 import type { GeneroEnum } from "./Genero";
 
 export interface Usuario {
-    id?: string;
-    nome?: string;
-    idade?: number;
-    genero?: GeneroEnum;
-    deficiencias?: string[];
-    lezoes?: string[];
-    login?: string;
-    password?: string;
-    role?: string;
+  id?: string;
+  nome?: string;
+  idade?: number;
+  genero?: GeneroEnum;
+  deficiencias?: string[];
+  lezoes?: string[];
+  role?: string;
 }

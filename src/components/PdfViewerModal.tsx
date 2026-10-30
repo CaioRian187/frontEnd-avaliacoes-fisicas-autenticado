@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import { useEffect, useRef } from "react";
 
 interface PdfViewerModalProps {
@@ -40,7 +41,7 @@ export const PdfViewerModal = ({ pdfUrl, nomeArquivo, onClose, onDownload }: Pdf
                 iframe.contentWindow.print();
                 return;
             } catch (error) {
-                console.error("Não foi possível abrir a impressão nativa: ", error);
+                logError("Não foi possível abrir a impressão nativa: ", error);
             }
         }
 

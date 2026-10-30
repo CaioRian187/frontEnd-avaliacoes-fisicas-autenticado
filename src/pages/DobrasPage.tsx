@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { logError } from "../utils/logger";
+import { useCallback, useEffect, useState } from "react";
 import { getTokenDecoded } from "../utils/Auth";
 import { findAllDobrasByAlunoId } from "../services/DobraService";
 import { findAllUsuariosProjetions } from "../services/UsuarioService";
@@ -8,7 +9,7 @@ import { FormDobras } from "../components/FormDobras";
 import { ListaDobras } from "../components/ListaDobras";
 import { ModalEditarDobra } from "../components/ModalEditarDobra";
 import { BotaoVoltar } from "../components/BotaoVoltar";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 export const DobrasPage = () => {
 
@@ -18,24 +19,24 @@ export const DobrasPage = () => {
     const [idAndNomeUsuarios, setIdAndNomeUsuarios] = useState<{ id: string; nome: string }[]>([]);
     const [dobraEmEdicao, setDobraEmEdicao] = useState<DobraCutanea | null>(null);
 
-    const carregarDobras = async (alunoId: string) => {
+    const carregarDobras = useCallback(async (alunoId: string) => {
         try {
             const lista = await findAllDobrasByAlunoId(alunoId);
             setDobras(lista);
         } catch (error) {
-            console.error("Erro ao carregar dobras cutâneas: ", error);
+            logError("Erro ao carregar dobras cutâneas: ", error);
             showError("Não foi possível carregar as dobras cutâneas.");
         }
-    }
+    }, [showError]);
 
-    const handleListIdAndNomeUsuarios = (list: Usuario[]) => {
+    const handleListIdAndNomeUsuarios = useCallback((list: Usuario[]) => {
         const idAndNomeList = list.map((usuario) => ({
             id: usuario?.id || "",
             nome: usuario?.nome || "",
         }));
         setIdAndNomeUsuarios(idAndNomeList);
         return idAndNomeList;
-    }
+    }, []);
 
     useEffect(() => {
         const loadDobras = async () => {
@@ -63,12 +64,12 @@ export const DobrasPage = () => {
 
                 await carregarDobras(alunoId);
             } catch (error) {
-                console.error(error);
+                logError(error);
             }
         };
 
         loadDobras();
-    }, []);
+    }, [carregarDobras, handleListIdAndNomeUsuarios, showError]);
 
     const handleSelecionarAluno = async (alunoId: string) => {
         if (!alunoId) return;

@@ -1,9 +1,10 @@
+import { logError } from "../utils/logger";
 import { useMemo, useState } from "react";
 import { converterData } from "../utils/ConverterData";
 import type { DobraCutanea } from "../interfaces/DobraCutanea";
 import { ModalDelete } from "./ModalDelete";
 import { deleteDobraById } from "../services/DobraService";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 type MedidaKey =
     | "biceps"
@@ -97,7 +98,7 @@ export const ListaDobras = ({ isAdmin, idAndNomeUsuarios, dobras, setDobras, onE
             setIdParaDeletar(null);
             showSuccess("Dobra cutânea excluída com sucesso!");
         } catch (error) {
-            console.error("Erro ao deletar dobra cutânea: ", error);
+            logError("Erro ao deletar dobra cutânea: ", error);
             showError("Falha ao excluir a dobra cutânea.");
         }
     }

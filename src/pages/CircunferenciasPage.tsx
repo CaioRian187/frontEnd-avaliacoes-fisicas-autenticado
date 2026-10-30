@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { logError } from "../utils/logger";
+import { useCallback, useEffect, useState } from "react";
 import { getTokenDecoded } from "../utils/Auth";
 import { ListaCircunferencias } from "../components/ListaCircunferencias";
 import { findAllCircunferenciasByAlunoId } from "../services/CircunferenciaService";
@@ -8,28 +9,35 @@ import { ModalEditarCircunferencia } from "../components/ModalEditarCircunferenc
 import type { Usuario } from "../interfaces/Usuario";
 import { findAllUsuariosProjetions } from "../services/UsuarioService";
 import { BotaoVoltar } from "../components/BotaoVoltar";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 export const CircunferenciasPage = () => {
 
     const { showError } = useFeedbackModal();
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [circunferencias, setCircunferencias] = useState<Circunferencia[]>([]);
-    // Estado de usuarios mantido apenas para o setter; valor nunca lido (TS6133)
-    const [, setUsuarios] = useState<Usuario[]>([]);
     const [idAndNomeUsuarios, setIdAndNomeUsuarios] = useState<{ id: string; nome: string }[]>([]);
     const [circunferenciaEmEdicao, setCircunferenciaEmEdicao] = useState<Circunferencia | null>(null);
 
 
-    const carregarCircunferencias = async (alunoId: string) => {
+    const carregarCircunferencias = useCallback(async (alunoId: string) => {
         try {
             const lista = await findAllCircunferenciasByAlunoId(alunoId);
             setCircunferencias(lista);
         } catch (error) {
-            console.error("Erro ao carregar circunferências: ", error);
+            logError("Erro ao carregar circunferências: ", error);
             showError("Não foi possível carregar as circunferências.");
         }
-    }
+    }, [showError]);
+
+    const handleListIdAndNomeUsuarios = useCallback((list: Usuario[]) => {
+        const idAndNomeList = list.map((usuario) => ({
+            id: usuario?.id || "",
+            nome: usuario?.nome || "",
+        }));
+        setIdAndNomeUsuarios(idAndNomeList);
+        return idAndNomeList;
+    }, []);
 
     useEffect(() => {
         const loadCircunferencias = async () => {
@@ -50,34 +58,20 @@ export const CircunferenciasPage = () => {
 
                 await carregarCircunferencias(alunoId);
 
-
-                const listUsuariosProjetions = await findAllUsuariosProjetions();
-                setUsuarios(listUsuariosProjetions);
-
-
                 if (tokenDecoded.role === "ADMIN") {
+                    const listUsuariosProjetions = await findAllUsuariosProjetions();
                     handleListIdAndNomeUsuarios(listUsuariosProjetions);
                     setIsAdmin(true);
                 } else {
                     setIsAdmin(false);
                 }
             } catch (error) {
-                console.error(error);
+                logError(error);
             }
         };
 
         loadCircunferencias();
-    }, [])
-
-
-    const handleListIdAndNomeUsuarios = (list: Usuario[]) => {
-        const idAndNomeList = list.map((usuario) => ({
-            id: usuario?.id || "",
-            nome: usuario?.nome || "",
-        }));
-        setIdAndNomeUsuarios(idAndNomeList);
-        return idAndNomeList;
-    }
+    }, [carregarCircunferencias, handleListIdAndNomeUsuarios, showError])
 
     // Dispara a busca das circunferências sempre que o ADMIN seleciona outro aluno.
     const handleSelecionarAluno = async (alunoId: string) => {

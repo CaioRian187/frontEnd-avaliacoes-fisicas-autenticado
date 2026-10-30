@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { logError } from "../utils/logger";
+import React, { useCallback, useEffect, useState } from "react";
 import { getTokenDecoded } from "../utils/Auth";
 import { findAllUsuarios, findUsuariosByNome } from "../services/UsuarioService";
 import type { Usuario } from "../interfaces/Usuario";
@@ -6,7 +7,7 @@ import { ModalEditarAluno } from "../components/ModalEditarAluno";
 import { ListaAlunos } from "../components/ListaAlunos";
 import { Input } from "../components/Input";
 import { BotaoVoltar } from "../components/BotaoVoltar";
-import { useFeedbackModal } from "../hooks/useFeedbackModal";
+import { useFeedbackModal } from "../hooks/useFeedback";
 
 export const AlunosPage = () => {
 
@@ -16,15 +17,15 @@ export const AlunosPage = () => {
     const [usuarioEmEdicao, setUsuarioEmEdicao] = useState<Usuario | null>(null);
     const [buscaNome, setBuscaNome] = useState<string>("");
 
-    const carregarUsuarios = async () => {
+    const carregarUsuarios = useCallback(async () => {
         try {
             const lista = await findAllUsuarios();
             setUsuarios(lista);
         } catch (error) {
-            console.error("Erro ao carregar alunos: ", error);
+            logError("Erro ao carregar alunos: ", error);
             showError("Não foi possível carregar a lista de alunos.");
         }
-    }
+    }, [showError]);
 
     useEffect(() => {
         const tokenDecoded = getTokenDecoded();
@@ -36,7 +37,7 @@ export const AlunosPage = () => {
         }
 
         carregarUsuarios();
-    }, []);
+    }, [carregarUsuarios]);
 
     const handleBuscarPorNome = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -52,7 +53,7 @@ export const AlunosPage = () => {
             const lista = await findUsuariosByNome(nome);
             setUsuarios(lista);
         } catch (error) {
-            console.error("Erro ao buscar alunos por nome: ", error);
+            logError("Erro ao buscar alunos por nome: ", error);
             showError("Não foi possível buscar os alunos pelo nome informado.");
         }
     }

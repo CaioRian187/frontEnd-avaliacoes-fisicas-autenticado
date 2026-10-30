@@ -1,3 +1,4 @@
+import { logError } from "./logger";
 import { jwtDecode } from "jwt-decode";
 import type { UserToken } from "../interfaces/UserToken";
 
@@ -17,13 +18,12 @@ export const getTokenDecoded = (): UserToken | null => {
             window.dispatchEvent(new Event("session-expired"));
             return null;
         }
-        console.log(decoded);
         return decoded;
 
     } catch (error) {
         localStorage.removeItem("token");
         window.dispatchEvent(new Event("session-expired"));
-        console.error("Token Inválido.", error);
+        logError("Token Inválido.", error);
         return null;
     }
 
