@@ -1,3 +1,4 @@
+import { logError } from "../utils/logger";
 import React, { useState } from "react";
 import { Input } from "../components/Input";
 import { handleCadastro } from "../services/AuthService";
@@ -55,7 +56,7 @@ export const CasdastroPage = () => {
                 onClose: () => navigate("/"),
             });
         } catch (error) {
-            console.error("Erro ao cadastrar: ", error);
+            logError("Erro ao cadastrar: ", error);
             showError(extrairMensagemErro(error, "Falha ao realizar o cadastro. Verifique todos os dados inseridos."));
         }
     }
