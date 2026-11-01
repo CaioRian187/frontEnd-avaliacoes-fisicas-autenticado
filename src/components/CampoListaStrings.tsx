@@ -38,7 +38,7 @@ export const CampoListaStrings = ({ pergunta, placeholder, valores, onChange }: 
     };
 
     const adicionarValor = () => {
-        const valor = novoValor.trim();
+        const valor = novoValor.trim().slice(0, 120);
 
         if (!valor) return;
         if (valores.some((item) => item.toLowerCase() === valor.toLowerCase())) return;
@@ -107,6 +107,7 @@ export const CampoListaStrings = ({ pergunta, placeholder, valores, onChange }: 
                             type="text"
                             placeholder={placeholder}
                             value={novoValor}
+                            maxLength={120}
                             onChange={(e) => setNovoValor(e.target.value)}
                             onKeyDown={handleKeyDown}
                         />

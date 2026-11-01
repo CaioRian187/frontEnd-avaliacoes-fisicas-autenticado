@@ -33,16 +33,28 @@ export const CasdastroPage = () => {
             return;
         }
 
+        const idadeNumerica = Number(idade);
+
+        if (!Number.isInteger(idadeNumerica) || idadeNumerica < 1 || idadeNumerica > 120) {
+            showWarning("Informe uma idade válida entre 1 e 120 anos.");
+            return;
+        }
+
+        if (password.length < 6) {
+            showWarning("A senha deve ter ao menos 6 caracteres.");
+            return;
+        }
+
         if (!listasObrigatoriasValidas(deficiencias, lezoes)) {
             showWarning("Responda as perguntas sobre deficiência e lesão ou adicione ao menos um item em cada uma.");
             return;
         }
 
         const cadastroRequest: CadastroRequest = {
-            nome: nome,
-            idade: Number(idade),
+            nome: nome.trim(),
+            idade: idadeNumerica,
             genero: genero,
-            login: login,
+            login: login.trim(),
             password: password,
             deficiencias: deficiencias,
             lezoes: lezoes
@@ -90,6 +102,8 @@ export const CasdastroPage = () => {
                                     placeholder="Informe seu nome (ex: joãozinho)"
                                     onChange={(e) => setNome(e.target.value)}
                                     value={nome}
+                                    maxLength={120}
+                                    autoComplete="name"
                                 />
                             </div>
                             <div className="flex flex-col gap-1.5">
@@ -102,6 +116,9 @@ export const CasdastroPage = () => {
                                     placeholder="Informe sua idade (ex: 20)"
                                     onChange={(e) => setIdade(Number(e.target.value))}
                                     value={idade}
+                                    min={1}
+                                    max={120}
+                                    inputMode="numeric"
                                 />
                             </div>
 
@@ -134,6 +151,8 @@ export const CasdastroPage = () => {
                                     placeholder="Informe seu login (ex: joazinho5847)"
                                     onChange={(e) => setLogin(e.target.value)}
                                     value={login}
+                                    maxLength={60}
+                                    autoComplete="username"
                                 />
                             </div>
 
@@ -147,6 +166,9 @@ export const CasdastroPage = () => {
                                     placeholder="Informe sua senha (ex: 1649464)"
                                     onChange={(e) => setPassword(e.target.value)}
                                     value={password}
+                                    minLength={6}
+                                    maxLength={128}
+                                    autoComplete="new-password"
                                 />
                             </div>
                         </div>

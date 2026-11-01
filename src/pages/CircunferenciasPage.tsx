@@ -1,6 +1,5 @@
 import { logError } from "../utils/logger";
 import { useCallback, useEffect, useState } from "react";
-import { getTokenDecoded } from "../utils/Auth";
 import { ListaCircunferencias } from "../components/ListaCircunferencias";
 import { findAllCircunferenciasByAlunoId } from "../services/CircunferenciaService";
 import type { Circunferencia } from "../interfaces/Circunferencia";
@@ -10,11 +9,12 @@ import type { Usuario } from "../interfaces/Usuario";
 import { findAllUsuariosProjetions } from "../services/UsuarioService";
 import { BotaoVoltar } from "../components/BotaoVoltar";
 import { useFeedbackModal } from "../hooks/useFeedback";
+import { useAuth } from "../hooks/useAuth";
 
 export const CircunferenciasPage = () => {
 
+    const { user, isAdmin } = useAuth();
     const { showError } = useFeedbackModal();
-    const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [circunferencias, setCircunferencias] = useState<Circunferencia[]>([]);
     const [idAndNomeUsuarios, setIdAndNomeUsuarios] = useState<{ id: string; nome: string }[]>([]);
     const [circunferenciaEmEdicao, setCircunferenciaEmEdicao] = useState<Circunferencia | null>(null);
@@ -42,28 +42,17 @@ export const CircunferenciasPage = () => {
     useEffect(() => {
         const loadCircunferencias = async () => {
             try {
-                const tokenDecoded = getTokenDecoded();
-
-                if (!tokenDecoded) {
-                    showError("Token não encontrado.");
-                    return;
-                }
-
-                const alunoId = tokenDecoded?.id;
+                const alunoId = user?.id;
 
                 if (!alunoId) {
-                    showError("Aluno ID não encontrado no token decodificado.");
                     return;
                 }
 
                 await carregarCircunferencias(alunoId);
 
-                if (tokenDecoded.role === "ADMIN") {
+                if (isAdmin) {
                     const listUsuariosProjetions = await findAllUsuariosProjetions();
                     handleListIdAndNomeUsuarios(listUsuariosProjetions);
-                    setIsAdmin(true);
-                } else {
-                    setIsAdmin(false);
                 }
             } catch (error) {
                 logError(error);
@@ -71,7 +60,7 @@ export const CircunferenciasPage = () => {
         };
 
         loadCircunferencias();
-    }, [carregarCircunferencias, handleListIdAndNomeUsuarios, showError])
+    }, [carregarCircunferencias, handleListIdAndNomeUsuarios, isAdmin, user])
 
     // Dispara a busca das circunferências sempre que o ADMIN seleciona outro aluno.
     const handleSelecionarAluno = async (alunoId: string) => {

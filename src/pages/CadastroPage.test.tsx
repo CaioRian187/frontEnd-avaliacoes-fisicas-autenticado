@@ -28,7 +28,7 @@ const preencherCamposBasicos = async (user: ReturnType<typeof userEvent.setup>) 
   await user.type(screen.getByPlaceholderText("Informe sua idade (ex: 20)"), "20");
   await user.selectOptions(screen.getByRole("combobox"), "MULHER_CISGENERO");
   await user.type(screen.getByPlaceholderText("Informe seu login (ex: joazinho5847)"), "ana");
-  await user.type(screen.getByPlaceholderText("Informe sua senha (ex: 1649464)"), "123");
+  await user.type(screen.getByPlaceholderText("Informe sua senha (ex: 1649464)"), "123456");
 };
 
 describe("CadastroPage", () => {
@@ -66,7 +66,7 @@ describe("CadastroPage", () => {
       idade: 20,
       genero: "MULHER_CISGENERO",
       login: "ana",
-      password: "123",
+      password: "123456",
       deficiencias: ["cegueira"],
       lezoes: ["Não"],
     });

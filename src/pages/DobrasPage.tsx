@@ -1,6 +1,5 @@
 import { logError } from "../utils/logger";
 import { useCallback, useEffect, useState } from "react";
-import { getTokenDecoded } from "../utils/Auth";
 import { findAllDobrasByAlunoId } from "../services/DobraService";
 import { findAllUsuariosProjetions } from "../services/UsuarioService";
 import type { DobraCutanea } from "../interfaces/DobraCutanea";
@@ -10,11 +9,12 @@ import { ListaDobras } from "../components/ListaDobras";
 import { ModalEditarDobra } from "../components/ModalEditarDobra";
 import { BotaoVoltar } from "../components/BotaoVoltar";
 import { useFeedbackModal } from "../hooks/useFeedback";
+import { useAuth } from "../hooks/useAuth";
 
 export const DobrasPage = () => {
 
+    const { user, isAdmin } = useAuth();
     const { showError } = useFeedbackModal();
-    const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [dobras, setDobras] = useState<DobraCutanea[]>([]);
     const [idAndNomeUsuarios, setIdAndNomeUsuarios] = useState<{ id: string; nome: string }[]>([]);
     const [dobraEmEdicao, setDobraEmEdicao] = useState<DobraCutanea | null>(null);
@@ -41,25 +41,15 @@ export const DobrasPage = () => {
     useEffect(() => {
         const loadDobras = async () => {
             try {
-                const tokenDecoded = getTokenDecoded();
-
-                if (!tokenDecoded) {
-                    return;
-                }
-
-                const alunoId = tokenDecoded.id;
+                const alunoId = user?.id;
 
                 if (!alunoId) {
-                    showError("Aluno ID não encontrado no token decodificado.");
                     return;
                 }
 
-                if (tokenDecoded.role === "ADMIN") {
+                if (isAdmin) {
                     const listUsuariosProjetions = await findAllUsuariosProjetions();
                     handleListIdAndNomeUsuarios(listUsuariosProjetions);
-                    setIsAdmin(true);
-                } else {
-                    setIsAdmin(false);
                 }
 
                 await carregarDobras(alunoId);
@@ -69,7 +59,7 @@ export const DobrasPage = () => {
         };
 
         loadDobras();
-    }, [carregarDobras, handleListIdAndNomeUsuarios, showError]);
+    }, [carregarDobras, handleListIdAndNomeUsuarios, isAdmin, user]);
 
     const handleSelecionarAluno = async (alunoId: string) => {
         if (!alunoId) return;

@@ -9,9 +9,10 @@ import { findAllCircunferenciasByAlunoId } from "../services/CircunferenciaServi
 import { findAllDobrasByAlunoId } from "../services/DobraService";
 import { findAllUsuariosProjetions, findUsuarioById } from "../services/UsuarioService";
 import { gerarRelatorioPdf } from "../services/RelatorioService";
-import { getTokenDecoded } from "../utils/Auth";
+import { useAuth } from "../hooks/useAuth";
 import { converterData } from "../utils/ConverterData";
 import { extrairMensagemErro } from "../utils/ErrorUtils";
+import { ehPdfValido } from "../utils/Pdf";
 
 interface AlunoOption {
     id: string;
@@ -68,8 +69,8 @@ const obterMensagemErro = async (error: unknown): Promise<string> => {
 
 export const EstatisticasPage = () => {
 
+    const { user, isAdmin } = useAuth();
     const { showError, showWarning, showSuccess } = useFeedbackModal();
-    const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [alunos, setAlunos] = useState<AlunoOption[]>([]);
     const [alunoId, setAlunoId] = useState<string>("");
     const [alunoNome, setAlunoNome] = useState<string>("");
@@ -96,16 +97,12 @@ export const EstatisticasPage = () => {
     }, []);
 
     useEffect(() => {
-        const tokenDecoded = getTokenDecoded();
-
-        if (!tokenDecoded?.id) {
+        if (!user?.id) {
             showError("Não foi possível identificar o usuário logado.");
             return;
         }
 
-        if (tokenDecoded.role === "ADMIN") {
-            setIsAdmin(true);
-
+        if (isAdmin) {
             findAllUsuariosProjetions()
                 .then((usuarios) => {
                     setAlunos(
@@ -125,16 +122,15 @@ export const EstatisticasPage = () => {
             return;
         }
 
-        setAlunoId(tokenDecoded.id);
-        setIsAdmin(false);
+        setAlunoId(user.id);
 
-        findUsuarioById(tokenDecoded.id)
+        findUsuarioById(user.id)
             .then((usuario) => setAlunoNome(usuario.nome ?? "Aluno"))
             .catch((error: unknown) => {
                 logError("Erro ao carregar os dados do usuário: ", error);
                 setAlunoNome("Aluno");
             });
-    }, [showError]);
+    }, [showError, user, isAdmin]);
 
     // Carrega as datas das avaliacoes (dobras e circunferencias) do aluno selecionado.
     useEffect(() => {
@@ -275,8 +271,8 @@ export const EstatisticasPage = () => {
                 dataFinal: tipoRelatorio === "comparativo" ? dataFinal : undefined,
             });
 
-            if (blob.size === 0) {
-                showError("A API retornou um arquivo vazio. Verifique os dados selecionados.");
+            if (!(await ehPdfValido(blob))) {
+                showError("A API retornou um arquivo inválido. O relatório não será exibido por segurança.");
                 return;
             }
 

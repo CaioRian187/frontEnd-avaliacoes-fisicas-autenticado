@@ -1,27 +1,12 @@
 import { logError } from "../utils/logger";
-import axios from "axios";
+import { http } from "./http";
 import type { Exercicio, ExercicioRequest, GrupoMuscular } from "../interfaces/Exercicio";
-
-const API_URL = import.meta.env.VITE_URL_API;
-
-const buildAuthHeaders = () => {
-    const token = localStorage.getItem("token");
-    return {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    };
-};
 
 export const findAllExercicios = async (grupoMuscular?: GrupoMuscular): Promise<Exercicio[]> => {
     try {
-        const response = await axios.get<Exercicio[]>(
-            `${API_URL}/api/exercicios`,
-            {
-                ...buildAuthHeaders(),
-                params: grupoMuscular ? { grupoMuscular } : undefined,
-            }
-        );
+        const response = await http.get<Exercicio[]>("/api/exercicios", {
+            params: grupoMuscular ? { grupoMuscular } : undefined,
+        });
         return response.data;
     } catch (error) {
         logError("Erro ao listar exercícios: ", error);
@@ -31,11 +16,7 @@ export const findAllExercicios = async (grupoMuscular?: GrupoMuscular): Promise<
 
 export const createExercicio = async (exercicio: ExercicioRequest): Promise<Exercicio> => {
     try {
-        const response = await axios.post<Exercicio>(
-            `${API_URL}/api/exercicios`,
-            exercicio,
-            buildAuthHeaders()
-        );
+        const response = await http.post<Exercicio>("/api/exercicios", exercicio);
         return response.data;
     } catch (error) {
         logError("Erro ao cadastrar exercício: ", error);
@@ -45,10 +26,9 @@ export const createExercicio = async (exercicio: ExercicioRequest): Promise<Exer
 
 export const updateExercicio = async (id: string, exercicio: ExercicioRequest): Promise<Exercicio> => {
     try {
-        const response = await axios.put<Exercicio>(
-            `${API_URL}/api/exercicios/${id}`,
-            exercicio,
-            buildAuthHeaders()
+        const response = await http.put<Exercicio>(
+            `/api/exercicios/${encodeURIComponent(id)}`,
+            exercicio
         );
         return response.data;
     } catch (error) {
@@ -59,10 +39,7 @@ export const updateExercicio = async (id: string, exercicio: ExercicioRequest): 
 
 export const deleteExercicio = async (id: string): Promise<void> => {
     try {
-        await axios.delete(
-            `${API_URL}/api/exercicios/${id}`,
-            buildAuthHeaders()
-        );
+        await http.delete(`/api/exercicios/${encodeURIComponent(id)}`);
     } catch (error) {
         logError("Erro ao excluir exercício: ", error);
         throw error;

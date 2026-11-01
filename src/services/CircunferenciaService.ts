@@ -1,26 +1,12 @@
 import { logError } from "../utils/logger";
-import axios from "axios";
+import { http } from "./http";
 import type { Circunferencia } from "../interfaces/Circunferencia";
 import type { CircunferenciasRequest } from "../interfaces/CircunferenciasRequest";
 
-const API_URL = import.meta.env.VITE_URL_API;
-
-// Monta o header de autorizacao padrao usado em todos os endpoints de circunferencias.
-const buildAuthHeaders = () => {
-    const token = localStorage.getItem("token");
-    return {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    };
-};
-
 export const findAllCircunferenciasByAlunoId = async (alunoId: string): Promise<Circunferencia[]> => {
-
     try {
-        const response = await axios.get<Circunferencia[]>(
-            `${API_URL}/circunferencias/aluno/${alunoId}`,
-            buildAuthHeaders()
+        const response = await http.get<Circunferencia[]>(
+            `/circunferencias/aluno/${encodeURIComponent(alunoId)}`
         );
         return response.data;
     } catch (error) {
@@ -30,11 +16,9 @@ export const findAllCircunferenciasByAlunoId = async (alunoId: string): Promise<
 }
 
 export const findCircunferenciaById = async (id: string | number): Promise<Circunferencia> => {
-
     try {
-        const response = await axios.get<Circunferencia>(
-            `${API_URL}/circunferencias/${id}`,
-            buildAuthHeaders()
+        const response = await http.get<Circunferencia>(
+            `/circunferencias/${encodeURIComponent(String(id))}`
         );
         return response.data;
     } catch (error) {
@@ -44,13 +28,8 @@ export const findCircunferenciaById = async (id: string | number): Promise<Circu
 }
 
 export const createCircunferencia = async (circunferencias: CircunferenciasRequest): Promise<Circunferencia> => {
-
     try {
-        const response = await axios.post<Circunferencia>(
-            `${API_URL}/circunferencias`,
-            circunferencias,
-            buildAuthHeaders()
-        );
+        const response = await http.post<Circunferencia>("/circunferencias", circunferencias);
         return response.data;
     } catch (error) {
         logError(error);
@@ -62,12 +41,10 @@ export const updateCircunferencia = async (
     id: string | number,
     circunferencias: CircunferenciasRequest
 ): Promise<Circunferencia> => {
-
     try {
-        const response = await axios.put<Circunferencia>(
-            `${API_URL}/circunferencias/${id}`,
-            circunferencias,
-            buildAuthHeaders()
+        const response = await http.put<Circunferencia>(
+            `/circunferencias/${encodeURIComponent(String(id))}`,
+            circunferencias
         );
         return response.data;
     } catch (error) {
@@ -77,17 +54,10 @@ export const updateCircunferencia = async (
 }
 
 export const deleteCircunferenciasById = async (circunrenciaId: number) => {
-
     try {
-        const token = localStorage.getItem("token")
-        await axios.delete(`${API_URL}/circunferencias/${circunrenciaId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
+        await http.delete(`/circunferencias/${encodeURIComponent(String(circunrenciaId))}`);
     } catch (error) {
         logError(error);
         throw error;
     }
 }
-

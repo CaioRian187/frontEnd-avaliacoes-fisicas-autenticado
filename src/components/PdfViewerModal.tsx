@@ -81,6 +81,8 @@ export const PdfViewerModal = ({ pdfUrl, nomeArquivo, onClose, onDownload }: Pdf
                         ref={iframeRef}
                         src={pdfUrl}
                         title="Pré-visualização do relatório em PDF"
+                        sandbox="allow-same-origin"
+                        referrerPolicy="no-referrer"
                         className="h-full w-full rounded-xl border border-gray-200 bg-white"
                     />
                 </div>

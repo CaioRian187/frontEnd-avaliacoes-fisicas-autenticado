@@ -2,10 +2,8 @@ import { logError } from "../utils/logger";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Usuario } from "../interfaces/Usuario";
-import type { UserToken } from "../interfaces/UserToken";
-import { handleLogout } from "../services/AuthService";
 import { findUsuarioById } from "../services/UsuarioService";
-import { getTokenDecoded } from "../utils/Auth";
+import { useAuth } from "../hooks/useAuth";
 import { ModalEditarAluno } from "./ModalEditarAluno";
 
 interface UserProfileDrawerProps {
@@ -28,10 +26,10 @@ const obterIniciais = (nome: string): string => {
 export const UserProfileDrawer = ({ isOpen, onClose }: UserProfileDrawerProps) => {
 
     const navigate = useNavigate();
+    const { user: tokenInfo, logout } = useAuth();
     const [shouldRender, setShouldRender] = useState<boolean>(isOpen);
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [usuario, setUsuario] = useState<Usuario | null>(null);
-    const [tokenInfo, setTokenInfo] = useState<UserToken | null>(null);
     const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
 
     // Controla a animacao de entrada/saida mantendo o componente montado durante o fechamento.
@@ -51,14 +49,11 @@ export const UserProfileDrawer = ({ isOpen, onClose }: UserProfileDrawerProps) =
     useEffect(() => {
         if (!isOpen) return;
 
-        const tokenDecoded = getTokenDecoded();
-        setTokenInfo(tokenDecoded);
-
-        if (!tokenDecoded?.id) return;
+        if (!tokenInfo?.id) return;
 
         let ativo = true;
 
-        findUsuarioById(tokenDecoded.id)
+        findUsuarioById(tokenInfo.id)
             .then((usuarioEncontrado) => {
                 if (ativo) setUsuario(usuarioEncontrado);
             })
@@ -69,7 +64,7 @@ export const UserProfileDrawer = ({ isOpen, onClose }: UserProfileDrawerProps) =
         return () => {
             ativo = false;
         };
-    }, [isOpen]);
+    }, [isOpen, tokenInfo?.id]);
 
     // Fecha o drawer ao pressionar ESC.
     useEffect(() => {
@@ -90,7 +85,7 @@ export const UserProfileDrawer = ({ isOpen, onClose }: UserProfileDrawerProps) =
     const isAdmin = role === "ADMIN";
 
     const handleSair = () => {
-        handleLogout();
+        logout();
         setIsEditOpen(false);
         onClose();
         navigate("/");

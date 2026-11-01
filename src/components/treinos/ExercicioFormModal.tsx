@@ -4,6 +4,7 @@ import { GRUPO_MUSCULAR_LABELS, GRUPOS_MUSCULARES, type Exercicio, type Exercici
 import { createExercicio, deleteExercicio, updateExercicio } from "../../services/ExercicioService";
 import { useFeedbackModal } from "../../hooks/useFeedback";
 import { extrairMensagemErro } from "../../utils/ErrorUtils";
+import { getYouTubeEmbedUrl } from "../../utils/YouTube";
 
 interface ExercicioFormModalProps {
     isOpen: boolean;
@@ -38,6 +39,11 @@ export const ExercicioFormModal = ({ isOpen, exercicio, onClose, onSaved, onDele
 
         if (!nome.trim() || !descricao.trim() || !urlVideo.trim()) {
             showWarning("Preencha nome, descrição e URL do vídeo.");
+            return;
+        }
+
+        if (!getYouTubeEmbedUrl(urlVideo.trim())) {
+            showWarning("Informe uma URL válida de vídeo do YouTube.");
             return;
         }
 
@@ -102,6 +108,7 @@ export const ExercicioFormModal = ({ isOpen, exercicio, onClose, onSaved, onDele
                             value={nome}
                             onChange={(event) => setNome(event.target.value)}
                             placeholder="Ex: Supino reto com barra"
+                            maxLength={120}
                             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
                         />
                     </div>
@@ -127,6 +134,7 @@ export const ExercicioFormModal = ({ isOpen, exercicio, onClose, onSaved, onDele
                             value={descricao}
                             onChange={(event) => setDescricao(event.target.value)}
                             rows={3}
+                            maxLength={2000}
                             placeholder="Descreva a execução do exercício"
                             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
                         />
@@ -139,6 +147,7 @@ export const ExercicioFormModal = ({ isOpen, exercicio, onClose, onSaved, onDele
                             value={urlVideo}
                             onChange={(event) => setUrlVideo(event.target.value)}
                             placeholder="https://www.youtube.com/watch?v=..."
+                            maxLength={500}
                             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
                         />
                     </div>
