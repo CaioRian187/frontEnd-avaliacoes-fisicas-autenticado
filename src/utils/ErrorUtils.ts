@@ -1,21 +1,37 @@
 import axios from "axios";
 
-// Extrai a mensagem devolvida pela API, evitando exibir uma mensagem generica quando
-// o back-end bloqueia a operacao (ex: aluno com circunferencias/dobras vinculadas).
+const LIMITE_MENSAGEM = 300;
+
+const sanitizarMensagem = (mensagem: string): string => {
+    return Array.from(mensagem)
+        .filter((caractere) => {
+            const codigo = caractere.charCodeAt(0);
+            return codigo >= 32 && codigo !== 127;
+        })
+        .join("")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, LIMITE_MENSAGEM);
+};
+
 export const extrairMensagemErro = (error: unknown, fallback: string): string => {
     if (axios.isAxiosError(error) && error.response?.data) {
         const data = error.response.data as Record<string, unknown> | string;
 
-        if (typeof data === "string") return data;
+        if (typeof data === "string") {
+            const mensagem = sanitizarMensagem(data);
+            return mensagem || fallback;
+        }
 
-        const mensagens = Object.values(data).filter(
-            (valor): valor is string => typeof valor === "string"
-        );
+        const mensagens = Object.values(data)
+            .filter((valor): valor is string => typeof valor === "string")
+            .map(sanitizarMensagem)
+            .filter(Boolean);
 
-        if (mensagens.length > 0) return mensagens.join(" ");
+        if (mensagens.length > 0) {
+            return sanitizarMensagem(mensagens.join(" "));
+        }
     }
-
-    if (error instanceof Error && error.message) return error.message;
 
     return fallback;
 };

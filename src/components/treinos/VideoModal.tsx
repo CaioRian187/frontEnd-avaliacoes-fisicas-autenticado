@@ -50,6 +50,8 @@ export const VideoModal = ({ url, titulo, onClose }: VideoModalProps) => {
                         src={embedUrl}
                         title={titulo}
                         className="h-full w-full"
+                        sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
+                        referrerPolicy="strict-origin-when-cross-origin"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
                     />

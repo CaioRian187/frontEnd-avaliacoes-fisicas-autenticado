@@ -43,6 +43,13 @@ const ModalEditarAlunoForm = ({ usuario, usuarios, setUsuarios, onClose, titulo 
             return;
         }
 
+        const idadeNumerica = Number(idade);
+
+        if (!Number.isInteger(idadeNumerica) || idadeNumerica < 1 || idadeNumerica > 120) {
+            showWarning("Informe uma idade válida entre 1 e 120 anos.");
+            return;
+        }
+
         if (!listasObrigatoriasValidas(deficiencias, lezoes)) {
             showWarning("Responda as perguntas sobre deficiência e lesão ou adicione ao menos um item em cada uma.");
             return;
@@ -54,8 +61,8 @@ const ModalEditarAlunoForm = ({ usuario, usuarios, setUsuarios, onClose, titulo 
         }
 
         const request: UsuarioUpdateRequest = {
-            nome: nome,
-            idade: Number(idade),
+            nome: nome.trim(),
+            idade: idadeNumerica,
             genero: genero,
             deficiencias: deficiencias,
             lezoes: lezoes,
@@ -93,6 +100,8 @@ const ModalEditarAlunoForm = ({ usuario, usuarios, setUsuarios, onClose, titulo 
                                     placeholder="Informe o nome do aluno"
                                     value={nome}
                                     onChange={(e) => setNome(e.target.value)}
+                                    maxLength={120}
+                                    autoComplete="name"
                                 />
                             </div>
 
@@ -104,6 +113,9 @@ const ModalEditarAlunoForm = ({ usuario, usuarios, setUsuarios, onClose, titulo 
                                     placeholder="Informe a idade do aluno"
                                     value={idade}
                                     onChange={(e) => setIdade(e.target.value)}
+                                    min={1}
+                                    max={120}
+                                    inputMode="numeric"
                                 />
                             </div>
                         </div>

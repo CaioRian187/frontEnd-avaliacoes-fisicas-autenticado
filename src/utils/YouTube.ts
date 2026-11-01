@@ -1,21 +1,55 @@
-// Extrai o ID do vídeo a partir das variações de URL aceitas pelo YouTube.
+const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/;
+const YOUTUBE_HOSTS = new Set([
+    "youtube.com",
+    "m.youtube.com",
+    "music.youtube.com",
+    "youtu.be",
+]);
+
+const normalizarUrl = (url: string): string => {
+    const possuiProtocolo = /^[a-z][a-z0-9+.-]*:/i.test(url);
+
+    return possuiProtocolo ? url : `https://${url}`;
+};
+
 export const extrairYouTubeId = (url: string): string | null => {
     if (!url) return null;
 
-    const padrao = /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
-    const correspondencia = padrao.exec(url);
-
-    if (correspondencia?.[1]) {
-        return correspondencia[1];
-    }
+    let parsed: URL;
 
     try {
-        const parsed = new URL(url);
-        const videoId = parsed.searchParams.get("v");
-
-        if (videoId) return videoId;
+        parsed = new URL(normalizarUrl(url.trim()));
     } catch {
         return null;
+    }
+
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        return null;
+    }
+
+    const host = parsed.hostname.replace(/^www\./, "");
+
+    if (!YOUTUBE_HOSTS.has(host)) {
+        return null;
+    }
+
+    if (host === "youtu.be") {
+        const correspondencia = parsed.pathname.match(/^\/([A-Za-z0-9_-]{11})(?:[/?#]|$)/);
+        return correspondencia?.[1] ?? null;
+    }
+
+    const porCaminho = parsed.pathname.match(
+        /\/(?:embed|shorts|live)\/([A-Za-z0-9_-]{11})(?:[/?#]|$)/
+    );
+
+    if (porCaminho?.[1]) {
+        return porCaminho[1];
+    }
+
+    const videoId = parsed.searchParams.get("v");
+
+    if (videoId && YOUTUBE_ID_PATTERN.test(videoId)) {
+        return videoId;
     }
 
     return null;
