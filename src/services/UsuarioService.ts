@@ -1,26 +1,11 @@
 import { logError } from "../utils/logger";
-import axios from "axios";
+import { http } from "./http";
 import type { Usuario } from "../interfaces/Usuario";
 import type { UsuarioUpdateRequest } from "../interfaces/UsuarioRequest";
 
-const API_URL = import.meta.env.VITE_URL_API;
-
-// Monta o header de autorizacao padrao usado em todos os endpoints de usuario.
-const buildAuthHeaders = () => {
-    const token = localStorage.getItem("token");
-    return {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    };
-};
-
 export const findAllUsuariosProjetions = async (): Promise<Usuario[]> => {
     try {
-        const response = await axios.get<Usuario[]>(
-            `${API_URL}/api/user/listar-usuarios-projetions`,
-            buildAuthHeaders()
-        );
+        const response = await http.get<Usuario[]>("/api/user/listar-usuarios-projetions");
         return response.data;
     } catch (error) {
         logError("Erro ao listar projeções de usuários: ", error);
@@ -30,10 +15,7 @@ export const findAllUsuariosProjetions = async (): Promise<Usuario[]> => {
 
 export const findAllUsuarios = async (): Promise<Usuario[]> => {
     try {
-        const response = await axios.get<Usuario[]>(
-            `${API_URL}/api/user/listar-usuarios`,
-            buildAuthHeaders()
-        );
+        const response = await http.get<Usuario[]>("/api/user/listar-usuarios");
         return response.data;
     } catch (error) {
         logError("Erro ao listar usuários: ", error);
@@ -43,10 +25,7 @@ export const findAllUsuarios = async (): Promise<Usuario[]> => {
 
 export const findUsuarioById = async (id: string): Promise<Usuario> => {
     try {
-        const response = await axios.get<Usuario>(
-            `${API_URL}/api/user/${id}`,
-            buildAuthHeaders()
-        );
+        const response = await http.get<Usuario>(`/api/user/${encodeURIComponent(id)}`);
         return response.data;
     } catch (error) {
         logError("Erro ao buscar usuário por id: ", error);
@@ -56,9 +35,8 @@ export const findUsuarioById = async (id: string): Promise<Usuario> => {
 
 export const findUsuariosByNome = async (nome: string): Promise<Usuario[]> => {
     try {
-        const response = await axios.get<Usuario[]>(
-            `${API_URL}/api/user/nome/${encodeURIComponent(nome)}`,
-            buildAuthHeaders()
+        const response = await http.get<Usuario[]>(
+            `/api/user/nome/${encodeURIComponent(nome)}`
         );
         return response.data;
     } catch (error) {
@@ -69,10 +47,9 @@ export const findUsuariosByNome = async (nome: string): Promise<Usuario[]> => {
 
 export const updateUsuario = async (id: string, usuario: UsuarioUpdateRequest): Promise<Usuario> => {
     try {
-        const response = await axios.put<Usuario>(
-            `${API_URL}/api/user/${id}`,
-            usuario,
-            buildAuthHeaders()
+        const response = await http.put<Usuario>(
+            `/api/user/${encodeURIComponent(id)}`,
+            usuario
         );
         return response.data;
     } catch (error) {
@@ -83,10 +60,7 @@ export const updateUsuario = async (id: string, usuario: UsuarioUpdateRequest): 
 
 export const deleteUsuarioById = async (id: string): Promise<void> => {
     try {
-        await axios.delete(
-            `${API_URL}/api/user/${id}`,
-            buildAuthHeaders()
-        );
+        await http.delete(`/api/user/${encodeURIComponent(id)}`);
     } catch (error) {
         logError("Erro ao deletar usuário: ", error);
         throw error;

@@ -4,6 +4,7 @@ import { handleLogin } from "../services/AuthService";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useFeedbackModal } from "../hooks/useFeedback";
+import { useAuth } from "../hooks/useAuth";
 import { extrairMensagemErro } from "../utils/ErrorUtils";
 
 
@@ -13,6 +14,7 @@ export const LoginPage = () => {
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
+    const { login: autenticar } = useAuth();
     const { showFeedback, showError } = useFeedbackModal();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -20,7 +22,12 @@ export const LoginPage = () => {
 
         try {
             const data = await handleLogin({ login, password });
-            localStorage.setItem("token", data.token);
+
+            if (!autenticar(data.token)) {
+                showError("A sessão recebida é inválida. Faça login novamente.");
+                return;
+            }
+
             showFeedback({
                 type: "success",
                 message: "Login realizado com sucesso!",
@@ -53,6 +60,8 @@ export const LoginPage = () => {
                             placeholder="Informe seu login (ex: joazinho5847)"
                             onChange={(e) => setLogin(e.target.value)}
                             value={login}
+                            maxLength={60}
+                            autoComplete="username"
                         />
                     </div>
 
@@ -66,6 +75,8 @@ export const LoginPage = () => {
                             placeholder="Informe sua senha (ex: 1649464)"
                             onChange={(e) => setPassword(e.target.value)}
                             value={password}
+                            maxLength={128}
+                            autoComplete="current-password"
                         />
                     </div>
 

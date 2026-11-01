@@ -1,6 +1,5 @@
 import { logError } from "../utils/logger";
 import React, { useCallback, useEffect, useState } from "react";
-import { getTokenDecoded } from "../utils/Auth";
 import { findAllUsuarios, findUsuariosByNome } from "../services/UsuarioService";
 import type { Usuario } from "../interfaces/Usuario";
 import { ModalEditarAluno } from "../components/ModalEditarAluno";
@@ -8,11 +7,12 @@ import { ListaAlunos } from "../components/ListaAlunos";
 import { Input } from "../components/Input";
 import { BotaoVoltar } from "../components/BotaoVoltar";
 import { useFeedbackModal } from "../hooks/useFeedback";
+import { useAuth } from "../hooks/useAuth";
 
 export const AlunosPage = () => {
 
+    const { isAdmin } = useAuth();
     const { showError } = useFeedbackModal();
-    const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [usuarioEmEdicao, setUsuarioEmEdicao] = useState<Usuario | null>(null);
     const [buscaNome, setBuscaNome] = useState<string>("");
@@ -28,16 +28,10 @@ export const AlunosPage = () => {
     }, [showError]);
 
     useEffect(() => {
-        const tokenDecoded = getTokenDecoded();
-
-        if (tokenDecoded?.role === "ADMIN") {
-            setIsAdmin(true);
-        } else {
-            setIsAdmin(false);
-        }
+        if (!isAdmin) return;
 
         carregarUsuarios();
-    }, [carregarUsuarios]);
+    }, [carregarUsuarios, isAdmin]);
 
     const handleBuscarPorNome = async (e: React.FormEvent) => {
         e.preventDefault();

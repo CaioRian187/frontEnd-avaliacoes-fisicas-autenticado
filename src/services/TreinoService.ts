@@ -1,25 +1,10 @@
 import { logError } from "../utils/logger";
-import axios from "axios";
+import { http } from "./http";
 import type { DiaSemana, Treino, TreinoRequest } from "../interfaces/Treino";
-
-const API_URL = import.meta.env.VITE_URL_API;
-
-const buildAuthHeaders = () => {
-    const token = localStorage.getItem("token");
-    return {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    };
-};
 
 export const createTreino = async (treino: TreinoRequest): Promise<Treino> => {
     try {
-        const response = await axios.post<Treino>(
-            `${API_URL}/api/treinos`,
-            treino,
-            buildAuthHeaders()
-        );
+        const response = await http.post<Treino>("/api/treinos", treino);
         return response.data;
     } catch (error) {
         logError("Erro ao cadastrar treino: ", error);
@@ -29,10 +14,9 @@ export const createTreino = async (treino: TreinoRequest): Promise<Treino> => {
 
 export const findAllTreinosByAlunoId = async (alunoId: string, diaSemana?: DiaSemana): Promise<Treino[]> => {
     try {
-        const response = await axios.get<Treino[]>(
-            `${API_URL}/api/treinos/aluno/${alunoId}`,
+        const response = await http.get<Treino[]>(
+            `/api/treinos/aluno/${encodeURIComponent(alunoId)}`,
             {
-                ...buildAuthHeaders(),
                 params: diaSemana ? { diaSemana } : undefined,
             }
         );
@@ -45,13 +29,9 @@ export const findAllTreinosByAlunoId = async (alunoId: string, diaSemana?: DiaSe
 
 export const findMeusTreinos = async (diaSemana?: DiaSemana): Promise<Treino[]> => {
     try {
-        const response = await axios.get<Treino[]>(
-            `${API_URL}/api/treinos/meus-treinos`,
-            {
-                ...buildAuthHeaders(),
-                params: diaSemana ? { diaSemana } : undefined,
-            }
-        );
+        const response = await http.get<Treino[]>("/api/treinos/meus-treinos", {
+            params: diaSemana ? { diaSemana } : undefined,
+        });
         return response.data;
     } catch (error) {
         logError("Erro ao listar meus treinos: ", error);
@@ -61,10 +41,7 @@ export const findMeusTreinos = async (diaSemana?: DiaSemana): Promise<Treino[]> 
 
 export const deleteTreino = async (id: string): Promise<void> => {
     try {
-        await axios.delete(
-            `${API_URL}/api/treinos/${id}`,
-            buildAuthHeaders()
-        );
+        await http.delete(`/api/treinos/${encodeURIComponent(id)}`);
     } catch (error) {
         logError("Erro ao excluir treino: ", error);
         throw error;

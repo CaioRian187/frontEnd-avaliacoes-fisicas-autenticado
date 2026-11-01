@@ -1,21 +1,12 @@
-import { useEffect, useState } from "react";
-import { getTokenDecoded } from "../utils/Auth";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { UserProfileDrawer } from "../components/UserProfileDrawer";
+import { useAuth } from "../hooks/useAuth";
 
 export const HomePage = () => {
 
-    const [isAdmin, setIsAdmin] = useState(false);
+    const { isAdmin } = useAuth();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-    useEffect(() => {
-        const decodedToken = getTokenDecoded();
-        if (decodedToken && decodedToken.role === "ADMIN") {
-            setIsAdmin(true);
-        } else {
-            setIsAdmin(false);
-        }
-    }, []);
 
     return (
 

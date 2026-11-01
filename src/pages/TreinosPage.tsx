@@ -2,13 +2,13 @@ import { useState } from "react";
 import { BotaoVoltar } from "../components/BotaoVoltar";
 import { ExerciciosTab } from "../components/treinos/ExerciciosTab";
 import { TreinosTab } from "../components/treinos/TreinosTab";
-import { getTokenDecoded } from "../utils/Auth";
+import { useAuth } from "../hooks/useAuth";
 
 type AbaTreinamentos = "TREINOS" | "EXERCICIOS";
 
 export const TreinosPage = () => {
 
-    const [isAdmin] = useState<boolean>(() => getTokenDecoded()?.role === "ADMIN");
+    const { isAdmin } = useAuth();
     const [abaAtiva, setAbaAtiva] = useState<AbaTreinamentos>("TREINOS");
 
     const abas: { valor: AbaTreinamentos; label: string }[] = isAdmin
